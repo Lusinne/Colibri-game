@@ -1,0 +1,36 @@
+*{
+	margin: 0;
+	padding: 0;
+	line-height: 1;
+	box-sizing: border-box;
+	outline: none;
+}
+svg{
+	height: 95vh;
+	width: 100%;
+	overflow: hidden !important;
+}
+
+#firstGame{
+	width: 0;
+	height: 0;
+	background: rgba(0,0,0,.4);
+	border-radius: 20px;
+	position: absolute;
+	top: 50%;
+	left: 50%
+	/*display: none;*/
+}
+#close{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 30px;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+	border-radius: 50%;
+	border: none;
+	background: #AA0000;
+	color: #fff;
+}
