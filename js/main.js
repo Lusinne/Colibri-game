@@ -1,12 +1,13 @@
 $(document).ready(function(){
-    let stages = $('.stages img');
+    window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
+    stages.eq(1).data('gameName','sudoku');
     stages.one('click',openGame);
 
     function openGame(e){
         let el = e.target;
-        console.log(stages);
         if(!$(this).data('gameName')) return;
+        stages.off('click');
         let section = $('<section class="game"></section>');
         let close = $('<button id="close">X</button>');
         section.append(close);
@@ -20,7 +21,7 @@ $(document).ready(function(){
         },1000, function(){
             switch($(el).data('gameName')){
                 case 'puzzle': puzzle(); break;
-                // case 'newGame':
+                case 'sudoku': sudoku(); break;
             }
         });
 
@@ -132,7 +133,7 @@ $(document).ready(function(){
                         }, 'linear');
                         if($('#puzzle .piece').length === pieces.length){
                             showAlert('Շնորհավոոոոոոոոոր դուք հաղթահարեցիք առաջին փուլը');
-                            openNextStage(1,'newGame')
+                            openNextStage(1,'sudoku');
                         }
                         $(this).off('mousedown touchstart');
                     }
@@ -142,7 +143,7 @@ $(document).ready(function(){
 
         })
     }
-    function showAlert(val){
+    window.showAlert = function(val){
         let div = $('<section class="prompt"><div>' + val + '</div></section>');
         let answer = $('<div class="answer"></div>');
         let but = $('<button>Ok</button>');

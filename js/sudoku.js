@@ -1,4 +1,18 @@
-var squareObjects = [];
+(function(){
+	window.sudoku = function(){
+	let sudoku = $('<div class="sudoku" id="sudoku"></div>');
+	for(let i = 0, k = 0; i < 9; i++){
+		let sudokuSection = $('<div class="sudokuSection" id="sudokuSection' + i + '"></div>');
+		for(let j = 0; j < 9; j++, k++){
+			let sudokuSquare = $('<div class="sudokuSquare" id="square_' + (parseInt(j/3) + (i-i%3)) + '_' + (j%3 + (i%3)*3) + '"><span></span><span></span></div>');
+			sudokuSection.append(sudokuSquare);
+		}
+		sudoku.append(sudokuSection);
+	}
+	let bottom = $(`<div id="hintDiv"><div id="hintDivInner"></div></div><div id="debug" style="position:absolute;left:30px;top:600px"></div>`);
+	$('.game').append(sudoku.append(bottom));
+
+	var squareObjects = [];
 	var level = 1;	// 1 is lowest level
 	var countSquares = [36,36,34,32,31,30];
 	var gameFinished = false;
@@ -123,12 +137,11 @@ var squareObjects = [];
 			}	
 		}
 		
-		if(allOk)alert('Congratulations! You did it');
-		
+		if(allOk)showAlert('Congratulations! You did it');
+		stages.eq(2).data('gameName','next');
 	}
 	
-	function initSudoku()
-	{
+	function initSudoku(){
 		gameFinished = false;
 		document.getElementById('hintDiv').style.display='none';
 		var matrix = new Array();
@@ -442,19 +455,22 @@ var squareObjects = [];
 		gameFinished=true;
 	}
 	
-	function switchLevel(initLevel,linkObj)
-	{
-		var confirmSwitch = gameFinished;
-		if(!confirmSwitch)confirmSwitch = confirm('Click OK to finish the current game');
-		if(confirmSwitch){
-			var parentObj = linkObj.parentNode.parentNode;
-			var links = parentObj.getElementsByTagName('A');
-			for(var no=0;no<links.length;no++){
-				links[no].style.fontWeight='normal';
-			}
-			linkObj.style.fontWeight = 'bold';
-			level = initLevel;
-			setTimeout('initSudoku()',20);		
-		}
-	}
-window.onload = initSudoku;
+	// function switchLevel(initLevel,linkObj)
+	// {
+	// 	var confirmSwitch = gameFinished;
+	// 	if(!confirmSwitch)confirmSwitch = confirm('Click OK to finish the current game');
+	// 	if(confirmSwitch){
+	// 		var parentObj = linkObj.parentNode.parentNode;
+	// 		var links = parentObj.getElementsByTagName('A');
+	// 		for(var no=0;no<links.length;no++){
+	// 			links[no].style.fontWeight='normal';
+	// 		}
+	// 		linkObj.style.fontWeight = 'bold';
+	// 		level = initLevel;
+	// 		setTimeout('initSudoku()',20);
+	// 	}
+	// }
+initSudoku();
+}
+
+})()
