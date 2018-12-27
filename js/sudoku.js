@@ -289,9 +289,9 @@
 			highlightSquare(false,nextObject);
 		}
 		
-		if(code==46 || code==8){	// Delete
+		if(code === 46 || code === 8){	// Delete
 			span.innerHTML = '';
-			if(code==8)return false;
+			if(code === 8)return false;
 		}
 		if(code>96 && code<=105)code-=48;
 		if(code>48 && code<=57){				
