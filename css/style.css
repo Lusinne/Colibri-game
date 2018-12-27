@@ -198,3 +198,44 @@ body{
 	}
 
 }
+/*puzzle media*/
+@media (max-width: 767px) {
+	#puzzle td{
+		width: 30px;
+		height: 30px;
+	}
+	.piece{
+		width: 30px;
+		height: 30px;
+	}
+}
+@media (min-width: 768px){
+	#puzzle td{
+		width: 50px;
+		height: 50px;
+	}
+	.piece{
+		width: 50px;
+		height: 50px;
+	}
+}
+@media (min-width: 992px){
+	#puzzle td{
+		width: 80px;
+		height: 80px;
+	}
+	.piece{
+		width: 80px;
+		height: 80px;
+	}
+}
+@media (min-width: 1200px){
+	#puzzle td{
+		width: 100px;
+		height: 100px;
+	}
+	.piece{
+		width: 100px;
+		height: 100px;
+	}
+}
