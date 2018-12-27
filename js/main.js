@@ -1,11 +1,13 @@
 $(document).ready(function(){
-    let stages = $('.stages img');
+    window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
+    stages.eq(1).data('gameName','sudoku');
     stages.one('click',openGame);
 
     function openGame(e){
         let el = e.target;
         if(!$(this).data('gameName')) return;
+        stages.off('click');
         let section = $('<section class="game"></section>');
         let close = $('<button id="close">X</button>');
         section.append(close);
@@ -19,21 +21,24 @@ $(document).ready(function(){
         },1000, function(){
             switch($(el).data('gameName')){
                 case 'puzzle': puzzle(); break;
-                // case 'newGame':
+                case 'sudoku': sudoku(); break;
             }
         });
+
         let closeButton = $('#close');
         closeButton.one('click',function  closeGame(ev){
             let div = $('<section class="prompt"><div>Վստահ ես?</div></section>');
-            let answer = $('<div class="answer"><button>Ok</button><button>Cancel</button></div>');
+            let answer = $(`<div class="answer"><button id='Ok'>Այո</button><button id='Cancel'>Ոչ</button></div>`);
             $(document.body).append(div.append(answer));
 
             let promise = new Promise(function(resolve, reject){
                 div.on('click',function(ev){
                     let el = ev.target;
-                    if(el.innerText == 'Ok') resolve(el);
-                    else if(el.innerText == 'Cancel')reject(el);
+                    let attr = el.getAttribute('id')
+                    if(attr === 'Ok') resolve(el);
+                    else if(attr === 'Cancel')reject(el);
                 })
+
             });
 
             promise.then(function(){
@@ -56,11 +61,13 @@ $(document).ready(function(){
                         closeButton.off('click');
                         stages.one('click',openGame);
                     })
+
                 })
             },function(){
                 div.remove();
                 closeButton.one('click',closeGame);
             });
+
         });
     }
 
@@ -80,7 +87,7 @@ $(document).ready(function(){
         }
         section.append(table);
         let pieces = ['1_1.jpg','1-2.jpg','1-3.jpg','1-4.jpg','1-5.jpg','2-1.jpg','2-2.jpg','2-3.jpg','2-4.jpg','2-5.jpg','3-1.jpg','3-2.jpg','3-3.jpg','3-4.jpg','3-5.jpg','4-1.jpg','4-2.jpg','4-3.jpg','4-4.jpg','4-5.jpg'];
-        for (var i = 0; i < pieces.length; i++) {
+        for (let i = 0; i < pieces.length; i++) {
             let piece = $('<div class="piece"></div>');
             $(piece).data('pieceNo',i);
             $(piece).css({
@@ -95,6 +102,7 @@ $(document).ready(function(){
             section.append(piece)
         }
         $('.piece').on('mousedown touchstart',function(e){
+            console.log($(this).data('num'));
             let top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
             let thisPiece = $(this);
             thisPiece.addClass('higher');
@@ -106,7 +114,7 @@ $(document).ready(function(){
                 thisPiece.css('left',l - left + 'px');
             });
             $(this).one('mouseup touchend',function(el){
-            	thisPiece.removeClass('higher');
+                thisPiece.removeClass('higher');
                 let td = $('td');
                 let cx = el.pageX || el.changedTouches[0].clientX;
                 let cy = el.pageY || el.changedTouches[0].clientY;
@@ -126,23 +134,25 @@ $(document).ready(function(){
                         }, 'linear');
                         if($('#puzzle .piece').length === pieces.length){
                             showAlert('Շնորհավոոոոոոոոոր դուք հաղթահարեցիք առաջին փուլը');
-                            openNextStage(1,'newGame')
+                            openNextStage(1,'sudoku');
                         }
                         $(this).off('mousedown touchstart');
                     }
                 }
                 $(document).off('mousemove touchmove');
             });
+
         })
     }
-    function showAlert(val){
+    window.showAlert = function(val){
         let div = $('<section class="prompt"><div>' + val + '</div></section>');
         let answer = $('<div class="answer"></div>');
         let but = $('<button>Ok</button>');
         but.one('click',function(){div.remove()});
         $(document.body).append(div.append(answer.append(but)));
-    }
+    };
     function openNextStage(num,name){
         stages.eq(num).data('gameName',name);
     }
 });
+
