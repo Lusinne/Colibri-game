@@ -175,6 +175,7 @@ body{
 	h3{
 		font-size: .7em;
 	}
+<<<<<<< HEAD
 	/*body {*/
 		/*transform: rotate(-90deg);*/
 		/*height: 100vw;*/
@@ -196,4 +197,6 @@ body{
     left: 0;
     bottom: -100px;
 }
+=======
+>>>>>>> master
 }

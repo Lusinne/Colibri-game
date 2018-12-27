@@ -1,11 +1,21 @@
 $(document).ready(function(){
+<<<<<<< HEAD
     let stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
+=======
+    window.stages = $('.stages img');
+    stages.eq(0).data('gameName','puzzle');
+    stages.eq(1).data('gameName','sudoku');
+>>>>>>> master
     stages.one('click',openGame);
 
     function openGame(e){
         let el = e.target;
         if(!$(this).data('gameName')) return;
+<<<<<<< HEAD
+=======
+        stages.off('click');
+>>>>>>> master
         let section = $('<section class="game"></section>');
         let close = $('<button id="close">X</button>');
         section.append(close);
@@ -19,6 +29,7 @@ $(document).ready(function(){
         },1000, function(){
             switch($(el).data('gameName')){
                 case 'puzzle': puzzle(); break;
+<<<<<<< HEAD
                 // case 'newGame':
             }
         });
@@ -26,14 +37,31 @@ $(document).ready(function(){
         closeButton.one('click',function  closeGame(ev){
             let div = $('<section class="prompt"><div>Վստահ ես?</div></section>');
             let answer = $('<div class="answer"><button>Ok</button><button>Cancel</button></div>');
+=======
+                case 'sudoku': sudoku(); break;
+            }
+        });
+
+        let closeButton = $('#close');
+        closeButton.one('click',function  closeGame(ev){
+            let div = $('<section class="prompt"><div>Վստահ ես?</div></section>');
+            let answer = $(`<div class="answer"><button id='Ok'>Այո</button><button id='Cancel'>Ոչ</button></div>`);
+>>>>>>> master
             $(document.body).append(div.append(answer));
 
             let promise = new Promise(function(resolve, reject){
                 div.on('click',function(ev){
                     let el = ev.target;
+<<<<<<< HEAD
                     if(el.innerText == 'Ok') resolve(el);
                     else if(el.innerText == 'Cancel')reject(el);
                 })
+=======
+                    if(el.getAttribute('id') == 'Ok') resolve(el);
+                    else if(el.getAttribute('id') == 'Cancel')reject(el);
+                })
+
+>>>>>>> master
             });
 
             promise.then(function(){
@@ -56,11 +84,19 @@ $(document).ready(function(){
                         closeButton.off('click');
                         stages.one('click',openGame);
                     })
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
                 })
             },function(){
                 div.remove();
                 closeButton.one('click',closeGame);
             });
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
         });
     }
 
@@ -95,6 +131,10 @@ $(document).ready(function(){
             section.append(piece)
         }
         $('.piece').on('mousedown touchstart',function(e){
+<<<<<<< HEAD
+=======
+            console.log($(this).data('num'));
+>>>>>>> master
             let top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
             let thisPiece = $(this);
             thisPiece.addClass('higher');
@@ -106,7 +146,11 @@ $(document).ready(function(){
                 thisPiece.css('left',l - left + 'px');
             });
             $(this).one('mouseup touchend',function(el){
+<<<<<<< HEAD
             	thisPiece.removeClass('higher');
+=======
+                thisPiece.removeClass('higher');
+>>>>>>> master
                 let td = $('td');
                 let cx = el.pageX || el.changedTouches[0].clientX;
                 let cy = el.pageY || el.changedTouches[0].clientY;
@@ -126,16 +170,27 @@ $(document).ready(function(){
                         }, 'linear');
                         if($('#puzzle .piece').length === pieces.length){
                             showAlert('Շնորհավոոոոոոոոոր դուք հաղթահարեցիք առաջին փուլը');
+<<<<<<< HEAD
                             openNextStage(1,'newGame')
+=======
+                            openNextStage(1,'sudoku');
+>>>>>>> master
                         }
                         $(this).off('mousedown touchstart');
                     }
                 }
                 $(document).off('mousemove touchmove');
             });
+<<<<<<< HEAD
         })
     }
     function showAlert(val){
+=======
+
+        })
+    }
+    window.showAlert = function(val){
+>>>>>>> master
         let div = $('<section class="prompt"><div>' + val + '</div></section>');
         let answer = $('<div class="answer"></div>');
         let but = $('<button>Ok</button>');
@@ -146,3 +201,7 @@ $(document).ready(function(){
         stages.eq(num).data('gameName',name);
     }
 });
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
