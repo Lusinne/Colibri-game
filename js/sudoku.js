@@ -55,7 +55,7 @@
 		var obj = document.getElementById('sudoku');
 		var subObjects = obj.getElementsByTagName('DIV');
 		for(var no=0;no<subObjects.length;no++){
-			if(subObjects[no].className=='sudokuSquare'){
+			if(subObjects[no].className === 'sudokuSquare'){
 				subObjects[no].style.backgroundColor='';	
 				var spans = subObjects[no].getElementsByTagName('SPAN');
 				spans[0].style.display='none';
@@ -122,52 +122,107 @@
 	}
 	
 	
-	function isGameFinished()
-	{
-		var obj = document.getElementById('sudoku');
-		var subDivs = obj.getElementsByTagName('DIV');
-		var allOk = true;
-		for(var no=0;no<subDivs.length;no++){
-			if(subDivs[no].className.indexOf('sudokuSquare')>=0 && !subDivs[no].style.backgroundColor){
-				var spans = subDivs[no].getElementsByTagName('SPAN');
-				if(spans[0].innerHTML != spans[1].innerHTML){
-					allOk=false;
-					break;
-				}
-			}	
-		}
-		
-		if(allOk)showAlert('Congratulations! You did it');
-		stages.eq(2).data('gameName','next');
+	function isGameFinished() {
+        let obj = document.getElementById('sudoku');
+        let correct = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+        function checkSquare(correct) {
+            let cube = obj.querySelectorAll('.sudokuSection');
+            let bool = true;
+            for (let i = 0; i < cube.length; i++) {
+                let square = cube[i].querySelectorAll('div');
+                let squareList = [];
+                for (let j = 0; j < square.length; j++) {
+                    if (square[j].style.backgroundColor) {
+                        squareList.push(+square[j].querySelector('span').innerText);
+                    }
+                    else {
+                        squareList.push(+square[j].querySelectorAll('span')[1].innerText);
+                    }
+                }
+                if (squareList.sort().join('') !== correct.join('')) {
+                    bool = false;
+                    break;
+                }
+            }
+            return bool;
+        }
+
+        // ;
+        function checkRows(correct) {
+            let bool = true;
+            for (let i = 0; i < 9; i++) {
+                let rows = obj.querySelectorAll(`div>div[id^='square_${i}_']`);
+                let squareList = [];
+                for (let j = 0; j < rows.length; j++) {
+                    if (rows[j].style.backgroundColor) {
+                        squareList.push(+rows[j].querySelector('span').innerText);
+                    }
+                    else {
+                        squareList.push(+rows[j].querySelectorAll('span')[1].innerText);
+                    }
+                }
+                if (squareList.sort().join('') !== correct.join('')) {
+                    bool = false;
+                    break;
+                }
+            }
+            return bool;
+        }
+        function checkColumn(correct) {
+            let bool = true;
+            for (let i = 0; i < 9; i++) {
+                let rows = obj.querySelectorAll(`div>div[id$='_${i}']`);
+                console.log(rows);
+                let squareList = [];
+                for (let j = 0; j < rows.length; j++) {
+                    if (rows[j].style.backgroundColor) {
+                        squareList.push(+rows[j].querySelector('span').innerText);
+                    }
+                    else {
+                        squareList.push(+rows[j].querySelectorAll('span')[1].innerText);
+                    }
+                }
+                if (squareList.sort().join('') !== correct.join('')) {
+                    bool = false;
+                    break;
+                }
+            }
+            return bool;
+        }
+        if (checkColumn(correct) &&
+			checkRows(correct) &&
+			checkSquare(correct)) showAlert('Շնորհավորում եմ։ Դուք հաղթահարեցիք նաև երկրորդ փուլը!!!!!');
+    		stages.eq(2).data('gameName','next');
 	}
 	
 	function initSudoku(){
 		gameFinished = false;
 		document.getElementById('hintDiv').style.display='none';
-		var matrix = new Array();
-		for(var rowCounter=0;rowCounter<9;rowCounter++){
-			matrix[rowCounter] = new Array();
-			for(var colCounter=0;colCounter<9;colCounter++){
-				var number = colCounter/1 + 1 + (rowCounter*3) + Math.floor(rowCounter/3)%3;
+		let matrix = [];
+		for(let rowCounter=0;rowCounter<9;rowCounter++){
+			matrix[rowCounter] = [];
+			for(let colCounter=0;colCounter<9;colCounter++){
+				let number = colCounter + 1 + (rowCounter*3) + Math.floor(rowCounter/3)%3;
 				if(number>9)number = number % 9;
-				if(number==0)number=9;
+				if(number === 0)number=9;
 				matrix[rowCounter][colCounter] = number;				
 			}			
 		}
 		
 		// Switching rows
 		
-		for(var no=0;no<9;no+=3){
+		for(let no=0;no<9;no+=3){
 			
-			for(var no2=0;no2<3;no2++){
+			for(let no2=0;no2<3;no2++){
 				row1 = Math.floor(Math.random()*3);	
 				row2 = Math.floor(Math.random()*3);	
-				while(row2==row1){
+				while(row2 === row1){
 					row2 = Math.floor(Math.random()*3);	
 				}
 				row1 = row1 + no;
 				row2 = row2 + no;			
-				var tmpMatrix = new Array();
+				let tmpMatrix = [];
 				tmpMatrix = matrix[row1];
 				matrix[row1] = matrix[row2];
 				matrix[row2] = tmpMatrix; 				
@@ -176,18 +231,18 @@
 		
 		// Switching columns
 		
-		for(var no=0;no<9;no+=3){
-			for(var no2=0;no2<3;no2++){
+		for(let no=0;no<9;no+=3){
+			for(let no2=0;no2<3;no2++){
 				col1 = Math.floor(Math.random()*3);	
 				col2 = Math.floor(Math.random()*3);	
-				while(col2==col1){
+				while(col2 === col1){
 					col2 = Math.floor(Math.random()*3);	
 				}
 				col1 = col1 + no;
 				col2 = col2 + no;			
 
-				var tmpMatrix = new Array();
-				for(var no3=0;no3<matrix.length;no3++){
+				let tmpMatrix = [];
+				for(let no3=0;no3<matrix.length;no3++){
 					tmpMatrixValue = matrix[no3][col1];
 					matrix[no3][col1] = matrix[no3][col2];				
 					matrix[no3][col2] = tmpMatrixValue;				
@@ -196,12 +251,12 @@
 		}
 		
 		
-		for(var no=0;no<matrix.length;no++){
-			for(var no2=0;no2<matrix[no].length;no2++){				
-				var obj = document.getElementById('square_' + no + '_' + no2);
-				var spanObjects = obj.getElementsByTagName('SPAN');
+		for(let no=0;no<matrix.length;no++){
+			for(let no2=0;no2<matrix[no].length;no2++){
+				let obj = document.getElementById('square_' + no + '_' + no2);
+				let spanObjects = obj.getElementsByTagName('SPAN');
 				
-				var span = spanObjects[0];
+				let span = spanObjects[0];
 				span.innerHTML = matrix[no][no2];		
 				span.style.display='none';	
 				
@@ -231,38 +286,38 @@
 		if(!higlightedCell)return;
 		if(gameFinished)return;
 		if (e.keyCode) code = e.keyCode; else if (e.which) code = e.which;
-		var span = higlightedCell.getElementsByTagName('SPAN')[1];
+		let span = higlightedCell.getElementsByTagName('SPAN')[1];
 		
-		var numbers = higlightedCell.id.split('_');
+		let numbers = higlightedCell.id.split('_');
 
-		var row = numbers[1]/1;
-		var col = numbers[2]/1;
-		var nextObject = false;
+		let row = numbers[1]/1;
+		let col = numbers[2]/1;
+		let nextObject = false;
 			
-		if(code==39){ // Right arrow
-			if(col<8){
-				nextObject = document.getElementById('square_' + row + '_' + (col/1+1));
+		if(code === 39){ // Right arrow
+			if(col < 8){
+				nextObject = document.getElementById('square_' + row + '_' + (col+1));
 				if(nextObject.style.backgroundColor){
-					while(col<8 && nextObject.style.backgroundColor){
-						col = col+1;
+					while(col < 8 && nextObject.style.backgroundColor){
+						col ++;
 						nextObject = document.getElementById('square_' + row + '_' + col);
 					}
 				}				
 			}
 		}
-		if(code==37){ // Left arrow
+		if(code === 37){ // Left arrow
 			if(col>0){
-				nextObject = document.getElementById('square_' + row + '_' + (col/1-1));
+				nextObject = document.getElementById('square_' + row + '_' + (col - 1));
 				if(nextObject.style.backgroundColor){
 					while(col>0 && nextObject.style.backgroundColor){
-						col = col-1;
+						col --;
 						nextObject = document.getElementById('square_' + row + '_' + col);
 					}
 				}
 				if(nextObject.style.backgroundColor)nextObject = false;
 			}
 		}
-		if(code==38){
+		if(code === 38){
 			if(row>0){
 				nextObject = document.getElementById('square_' + (row-1) + '_' + col);
 				if(nextObject.style.backgroundColor){
@@ -273,7 +328,7 @@
 				}				
 			}
 		}		
-		if(code==40){
+		if(code === 40){
 			if(row<8){
 				nextObject = document.getElementById('square_' + (row+1) + '_' + col);
 				if(nextObject.style.backgroundColor){
@@ -307,16 +362,16 @@
 		if(gameFinished)return false;
 		
 		if(confirm('Do you want me to reveal a number for you?')){
-			var allreadyRevealed = true;
-			var counter = 0;
+			let allreadyRevealed = true;
+			let counter = 0;
 			do{
-				var row = Math.floor(Math.random()*9);
-				var col = Math.floor(Math.random()*9);
+				let row = Math.floor(Math.random()*9);
+				let col = Math.floor(Math.random()*9);
 				
-				var el = document.getElementById('square_'+row+'_'+col);	
+				let el = document.getElementById('square_'+row+'_'+col);
 				
-				var spans = el.getElementsByTagName('SPAN');
-				if(spans[1].innerHTML.length==0){
+				let spans = el.getElementsByTagName('SPAN');
+				if(spans[1].innerHTML.length === 0){
 					spans[1].innerHTML = spans[0].innerHTML;
 					spans[1].style.color='#FF0000';
 					allreadyRevealed =  false;					
@@ -325,22 +380,20 @@
 				counter++
 			}while(allreadyRevealed && counter<500);		
 		}
-		
 		isGameFinished();
-		
 	}
 		
 	function isCorrect(divObj)
 	{
-		var spans = divObj.getElementsByTagName('SPAN');
-		if(spans[0].innerHTML==spans[1].innerHTML || spans[1].innerHTML.length==0)return true;
+		let spans = divObj.getElementsByTagName('SPAN');
+		if(spans[0].innerHTML === spans[1].innerHTML || spans[1].innerHTML.length === 0)return true;
 		return false;		
 	}
 	
 	function getTopPos(inputObj)
 	{
 		
-	  var returnValue = inputObj.offsetTop;
+	  let returnValue = inputObj.offsetTop;
 	  while((inputObj = inputObj.offsetParent) != null){
 	  	returnValue += inputObj.offsetTop;
 	  }
@@ -349,24 +402,24 @@
 	
 	function getLeftPos(inputObj)
 	{
-	  var returnValue = inputObj.offsetLeft;
+	  let returnValue = inputObj.offsetLeft;
 	  while((inputObj = inputObj.offsetParent) != null)returnValue += inputObj.offsetLeft;
 	  return returnValue;
 	}
 		
 	function getPossibleNumbers(inputObj)
 	{
-		var noArray = new Array();
-		var countNumbers = 0;
+		let noArray = [];
+		let countNumbers = 0;
 		var spans = inputObj.getElementsByTagName('SPAN');
-		if(spans[0].innerHTML ==spans[1].innerHTML)return 0;
+		if(spans[0].innerHTML === spans[1].innerHTML)return 0;
 		
-		var parentDiv = inputObj.parentNode;
-		var subDivs = parentDiv.getElementsByTagName('DIV');
-		for(var no=0;no<subDivs.length;no++){
+		let parentDiv = inputObj.parentNode;
+		let subDivs = parentDiv.getElementsByTagName('DIV');
+		for(let no=0;no<subDivs.length;no++){
 			if(subDivs[no]!=inputObj){
 				var spans = subDivs[no].getElementsByTagName('SPAN');
-				if(spans[0].innerHTML == spans[1].innerHTML || subDivs[no].style.backgroundColor.length>1){
+				if(spans[0].innerHTML === spans[1].innerHTML || subDivs[no].style.backgroundColor.length>1){
 					if(!noArray[spans[0].innerHTML]){
 						noArray[spans[0].innerHTML] = true;		
 						countNumbers++;
@@ -375,11 +428,11 @@
 			}	
 		}
 	
-		var numbers = inputObj.id.split('_');
-		var row = numbers[1];
-		var col = numbers[2];
+		let numbers = inputObj.id.split('_');
+		let row = numbers[1];
+		let col = numbers[2];
 		
-		for(var no=0;no<9;no++){			
+		for(let no = 0;no < 9;no++){
 			
 			var obj = document.getElementById('square_' + row + '_' + no);
 			if(obj!=inputObj){
