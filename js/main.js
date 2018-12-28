@@ -93,10 +93,11 @@ $(document).ready(function(){
             $(piece).css({
                 'height': '100px',
                 'width': '100px',
-                'top': Math.floor(Math.random()*(parseInt(section.css('height'))-100))+ 'px',
-                'left': Math.floor(Math.random()*(parseInt(section.css('width'))-100)) + 'px',
+                'top': (Math.floor(Math.random()*(parseInt(section.css('height'))-100))*90/screen.height)+ '%',
+                'left':( Math.floor(Math.random()*(parseInt(section.css('width'))-100))*90/screen.width) + '%',
                 'background': 'url(images/puzzle/'+pieces[i]+')',
-                'transform': 'rotate(' +Math.floor(Math.random()*180) + 'deg)'
+                'transform': 'rotate(' +Math.floor(Math.random()*180) + 'deg)',
+                'background-size':'cover'
             });
             $(piece).data('num',i);
             section.append(piece)
