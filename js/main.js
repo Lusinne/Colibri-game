@@ -1,7 +1,6 @@
 $(document).ready(function(){
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
-    // stages.eq(1).data('gameName','sudoku');
     stages.one('click',openGame);
 
     function openGame(e){
@@ -22,6 +21,7 @@ $(document).ready(function(){
             switch($(el).data('gameName')){
                 case 'puzzle': puzzle(); break;
                 case 'sudoku': sudoku(); break;
+                case 'ballons': ballons(); break;
             }
         });
 
@@ -35,7 +35,7 @@ $(document).ready(function(){
                 div.on('click',function(ev){
                     let el = ev.target;
                     if(el.getAttribute('id') == 'Ok') resolve(el);
-                    else if(el.getAttribute('id') == 'Cancel')reject(el);
+                    else if(el.getAttribute('id') == 'Cancel') reject(el);
                 })
 
             });
@@ -147,6 +147,66 @@ $(document).ready(function(){
 
         })
     }
+
+    function ballons(){
+        let section = $('.game');
+        let bigDiv = $('<div id="ballonBox"></div>');
+        let game = $('<div id="ballonGame"></div>');
+        let score = $('<div><h2>Score: 0</h2></div>');
+        let title = $('<h2>Level 4: Ballons</h2>');
+        let o = 0;
+        let speed = 10000;
+        let speedBalloon = 1000;
+        let balloon=['blue-balloon.png','green-Balloon.gif','red-balloon.png','fish.png'];
+        let l = balloon.length;
+        let start = setInterval(function(){
+            let bal = Math.floor(Math.random() * l);
+            let el = $('<div class="d' + o + '"><img src="images/ballon_game/'+ balloon[bal] + '"></div>');
+            if(bal === l - 1) $(el.find('img')).data('value', 1);
+            game.append(el);
+            let left = (Math.random()) * 100;
+            let top = (Math.random()) * 50;
+            el.css({'left' : left + '%', 'bottom' : top + '%'});
+            el.animate({top: '0', height: '50px', width: '50px'
+            }, speed, function(){
+                clearInterval(start);
+                el.stop();
+                showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + o + ' միավոր');
+                $('#ballonGame div').stop();
+                $('section img').remove();
+            });
+
+        },speedBalloon);
+
+        $(game).on("click", "div", function(ev){
+            $(this).stop();
+            $(this).remove();
+            o++;
+            console.log($(this).data('value'));
+            if ($(this).data('value') === 1){
+                o += 2;
+                let bon = $('<span>Bonus +3</span>');
+                bon.css({
+                    position: 'relative',
+                    top: ev.pageY - 10 + 'px',
+                    left: ev.pageX + 'px',
+                });
+                $(document.body).append(bon);
+                setTimeout(function(){
+                    bon.remove();
+                },1000);
+            }
+            score.html('<h2>Score: ' + o + '</h2>');
+            if(!(o % 10)){
+               if(speed > 500) speed -= 500;
+               if(speedBalloon > 300) speedBalloon -= 300;
+            }
+        });
+
+        section.append(bigDiv.append(title,game,score));
+
+    }
+
     window.showAlert = function(val){
         let div = $('<section class="prompt"><div>' + val + '</div></section>');
         let answer = $('<div class="answer"></div>');
