@@ -1,7 +1,7 @@
 $(document).ready(function(){
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
-    stages.eq(1).data('gameName','sudoku');
+    // stages.eq(1).data('gameName','sudoku');
     stages.one('click',openGame);
 
     function openGame(e){
@@ -28,15 +28,14 @@ $(document).ready(function(){
         let closeButton = $('#close');
         closeButton.one('click',function  closeGame(ev){
             let div = $('<section class="prompt"><div>Վստահ ես?</div></section>');
-            let answer = $(`<div class="answer"><button id='Ok'>Այո</button><button id='Cancel'>Ոչ</button></div>`);
+            let answer = $('<div class="answer"><button id="Ok">Այո</button><button id="Cancel">Ոչ</button></div>');
             $(document.body).append(div.append(answer));
 
             let promise = new Promise(function(resolve, reject){
                 div.on('click',function(ev){
                     let el = ev.target;
-                    let attr = el.getAttribute('id')
-                    if(attr === 'Ok') resolve(el);
-                    else if(attr === 'Cancel')reject(el);
+                    if(el.getAttribute('id') == 'Ok') resolve(el);
+                    else if(el.getAttribute('id') == 'Cancel')reject(el);
                 })
 
             });
@@ -73,6 +72,8 @@ $(document).ready(function(){
 
     function puzzle(){
         let section = $('.game');
+        let bigDiv = $('<div></div>');
+        let title = $('<h2>Level 1: Puzzle</h2>');
         let table = $('<table cellspacing="5" id="puzzle"></table>');
         let count = 0;
         for (let i = 0; i < 4; i++) {
@@ -85,23 +86,24 @@ $(document).ready(function(){
             }
             table.append(tr)
         }
-        section.append(table);
+        section.append(bigDiv.append(title,table));
+        let timer = new countScore(bigDiv);
+        timer.go();
         let pieces = ['1_1.jpg','1-2.jpg','1-3.jpg','1-4.jpg','1-5.jpg','2-1.jpg','2-2.jpg','2-3.jpg','2-4.jpg','2-5.jpg','3-1.jpg','3-2.jpg','3-3.jpg','3-4.jpg','3-5.jpg','4-1.jpg','4-2.jpg','4-3.jpg','4-4.jpg','4-5.jpg'];
-        for (let i = 0; i < pieces.length; i++) {
+        for (var i = 0; i < pieces.length; i++) {
             let piece = $('<div class="piece"></div>');
             $(piece).data('pieceNo',i);
             $(piece).css({
-                'height': '100px',
-                'width': '100px',
                 'top': (Math.floor(Math.random()*(parseInt(section.css('height'))-100))*90/screen.height)+ '%',
                 'left':( Math.floor(Math.random()*(parseInt(section.css('width'))-100))*90/screen.width) + '%',
                 'background': 'url(images/puzzle/'+pieces[i]+')',
-                'transform': 'rotate(' +Math.floor(Math.random()*180) + 'deg)',
-                'background-size':'cover'
+                'background-size': 'cover',
+                'transform': 'rotate(' +Math.floor(Math.random()*180) + 'deg)'
             });
             $(piece).data('num',i);
             section.append(piece)
         }
+
         $('.piece').on('mousedown touchstart',function(e){
             console.log($(this).data('num'));
             let top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
@@ -129,12 +131,12 @@ $(document).ready(function(){
                         td.eq(i).append($(this));
                         $(this).animate({  textIndent: 0}, {
                             step: function(now, fx) {
-                                $(this).css('-webkit-transform','rotate(' + now + 'deg)');
+                                $(this).css('transform','rotate(' + now + 'deg)');
                             },
                             duration: '5s'
                         }, 'linear');
                         if($('#puzzle .piece').length === pieces.length){
-                            showAlert('Շնորհավոոոոոոոոոր դուք հաղթահարեցիք առաջին փուլը');
+                            showAlert('Շնորհավոոոոոոոոոր դուք հաղթահարեցիք առաջին փուլը <br>' + timer.end());
                             openNextStage(1,'sudoku');
                         }
                         $(this).off('mousedown touchstart');
@@ -155,5 +157,44 @@ $(document).ready(function(){
     function openNextStage(num,name){
         stages.eq(num).data('gameName',name);
     }
+
+    window.countScore = function(where){
+        let watch = $('<h2></h2>');
+        let hours = $('<span>00</span>'), h = 0;
+        let minutes = $('<span>00</span>'), m = 0;
+        let seconds = $('<span>00</span>'), s = 0;
+        let start;
+        this.go = function(){
+           start = setInterval(function(){
+                s++;
+                seconds.text(addZero(s));
+                if(s === 60){
+                    s = 0;
+                    m++;
+                    minutes.text(addZero(m));
+                }
+                if(m === 60){
+                    m = 0;
+                    h++;
+                    hours.text(addZero(h));
+                }
+                if(h === 24){
+                    h = 0;
+                    hours.text(addZero(h));
+                }
+
+            },1000);
+            watch.append(hours, ' : ', minutes, ' : ', seconds);
+            $(where).append(watch);
+        };
+        this.end = function(){
+            clearInterval(start);
+            return addZero(h) + " : " + addZero(m) + " : " + addZero(s);
+        }
+    };
+    function addZero(a){
+        return (a < 10) ? '0' + a : a;
+    }
+
 });
 
