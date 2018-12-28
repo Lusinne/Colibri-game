@@ -175,15 +175,16 @@ body{
 	cursor:url('../images/ballon_game/needle-32.png'),auto;
 	background-color: rgba(255, 255, 255,.3);
 }
-#ballonGame>div
-{
+#ballonGame>div{
 	height: 20px;
 	width:20px;
 	position: absolute;
 	z-index: 10;
 }
-img
-{
+#ballonGame>div:active{
+	cursor:url('../images/ballon_game/needle-16.png');
+}
+#ballonGame img{
 	height: 100%;
 }
 @media (max-width: 900px){

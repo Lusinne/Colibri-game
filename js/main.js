@@ -157,47 +157,54 @@ $(document).ready(function(){
         let o = 0;
         let speed = 10000;
         let speedBalloon = 1000;
+        let level = 1;
         let balloon=['blue-balloon.png','green-Balloon.gif','red-balloon.png','fish.png'];
         let l = balloon.length;
         let start = setInterval(function(){
             let bal = Math.floor(Math.random() * l);
-            let el = $('<div class="d' + o + '"><img src="images/ballon_game/'+ balloon[bal] + '"></div>');
-            if(bal === l - 1) $(el.find('img')).data('value', 1);
+            let el = $('<div><img src="images/ballon_game/'+ balloon[bal] + '"></div>');
+            if(bal === l - 1) el.attr('data-value', 1);
             game.append(el);
-            let left = (Math.random()) * 100;
+            let left = (Math.random()) * 90;
             let top = (Math.random()) * 50;
             el.css({'left' : left + '%', 'bottom' : top + '%'});
             el.animate({top: '0', height: '50px', width: '50px'
             }, speed, function(){
                 clearInterval(start);
                 el.stop();
-                showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + o + ' միավոր');
+                if(o >= 50){
+                    showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + o + ' միավոր');
+                }else{
+                    showAlert('Ձեզ պակասում է ' + (20 - o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
+                }
                 $('#ballonGame div').stop();
                 $('section img').remove();
             });
 
         },speedBalloon);
 
-        $(game).on("click", "div", function(ev){
+        game.on("click", 'div', function(ev){
             $(this).stop();
             $(this).remove();
             o++;
-            console.log($(this).data('value'));
-            if ($(this).data('value') === 1){
-                o += 2;
-                let bon = $('<span>Bonus +3</span>');
+            if (this.dataset.value == 1){
+                o++;
+                let bon = $('<span>Բոնուս +2</span>');
                 bon.css({
-                    position: 'relative',
+                    position: 'absolute',
                     top: ev.pageY - 10 + 'px',
-                    left: ev.pageX + 'px',
+                    left: ev.pageX - 30 + 'px',
+                    color: '#fff'
                 });
-                $(document.body).append(bon);
-                setTimeout(function(){
-                    bon.remove();
-                },1000);
+               section.append(bon);
+               bon.animate({fontSize: '1.5em', color: 'transparent'}, 1000, function(){bon.remove()});
             }
             score.html('<h2>Score: ' + o + '</h2>');
-            if(!(o % 10)){
+            if(o / 20 >= level){
+               let newLevel = $('<h2>Մակարդակ ' + ++level + ' </h2>');
+               newLevel.css({position: 'absolute', top: '10px'});
+               section.append(newLevel);
+               newLevel.animate({fontSize: '3em', color: 'transparent'}, 1000, function(){newLevel.remove()});
                if(speed > 500) speed -= 500;
                if(speedBalloon > 300) speedBalloon -= 300;
             }
