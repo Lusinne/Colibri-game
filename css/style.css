@@ -165,6 +165,27 @@ body{
 .higher{
 	z-index: 100;
 }
+#ballonBox{
+	width: 70%;
+}
+#ballonGame{
+	height: 70vh;
+	width: 100%;
+	position: relative;
+	cursor:url('../images/ballon_game/needle-32.png'),auto;
+	background-color: rgba(255, 255, 255,.3);
+}
+#ballonGame>div
+{
+	height: 20px;
+	width:20px;
+	position: absolute;
+	z-index: 10;
+}
+img
+{
+	height: 100%;
+}
 @media (max-width: 900px){
 	.prompt{
 		width: 400px;
