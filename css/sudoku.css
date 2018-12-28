@@ -1,63 +1,20 @@
 body{
 	font-family: Trebuchet MS, Lucida Sans Unicode, Arial, sans-serif;
 }
-/*#ad{
-	position:absolute;
-	top:600px;
-	left:10px;
-}*/
-/*h1{
-	margin-top:0px;
-	margin-bottom:5px;
-	padding-bottom:0px;
-	padding-left:5px;
-}*/	
 
-#gameOptions{
-	position:absolute;
-	left:500px;
-	top:40px;
-	width:150px;
-	height:450px;
-	border:4px solid #000;
-	background-color:#E2EBED;
-	padding-left:5px;
-	font-size:0.9em;
-}
-
-#gameOptions ul{
-	padding-left:0px;
-	margin-left:0px;
-	margin-top:0px;
-}
-
-#gameOptions a{
-	color:#FF0000;
-	text-decoration:none;
-}
-#gameOptions a:hover{
-	
-	color:#317082;
-	text-decoration:underline;
-}
-
-#gameOptions li{
-	list-style-type:none;
-}
 .sudoku{
-	margin: 30px 0 0 0;
 	width:456px;
 	height:456px;
 	border:2px solid #000;
-	
+	display: flex;
+	flex-wrap: wrap;
 }
 .sudokuSquare,.sudokuSquareHighlighted{
-	width:46px;
-	height:46px;
-	float:left;
+	width:48px;
+	height:48px;
 	border:1px solid #000000;
 	padding:1px;
-	line-height:46px;
+	line-height:48px;
 	font-size:30px;
 	text-align:center;		
 	background-color:#FFF;
@@ -65,43 +22,42 @@ body{
 }
 .sudokuSquareHighlighted{
 	border:2px solid #317082;
-	width:46px;
-	height:46px;		
-	padding:0px;
+	width:48px;
+	height:48px;
+	padding:0;
 	background-color:#E2EBED;
 }
 
 .sudokuSection{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
 	width:150px;
 	height:150px;
 	border:1px solid #000000;
-	float:left;
 }
-.gameRules li{
-	font-size:0.9em;
-	margin-left:0px;
-	padding-left:0px;
 
-}
-#hintDiv{
-	position:absolute;
-	width:52px;
-	height:60px;
-	background-position: bottom left;
-	background-repeat:no-repeat;
-	display:none;	
-	margin-left:1px;	
-	
-	
-}
-#hintDivInner{
-	width:44px;
-	height:44px;
-	border-top:2px solid #000;
-	border-left:2px solid #000;
-	border-right:2px solid #000;
-	font-size:11px;	
-	padding:2px;
-	background-color:#FF0000;
-	color:#FFF;
+@media(max-width: 500px), (orientation: landscape) and (max-width: 900px){
+	.sudoku{
+		width:280px;
+		height:280px;
+	}
+	.sudokuSquare,.sudokuSquareHighlighted{
+		width:30px;
+		height:30px;
+		line-height:30px;
+		font-size:20px;
+	}
+	.sudokuSquareHighlighted{
+		border:2px solid #317082;
+		width:30px;
+		height:30px;
+		background-color:#E2EBED;
+	}
+	.sudokuSection{
+		width:92px;
+		height:92px;
+	}
+
 }
