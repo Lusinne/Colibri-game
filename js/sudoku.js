@@ -16,7 +16,7 @@ window.sudoku = function(){
     let timer = new countScore(bigDiv);
     timer.go();
 	var squareObjects = [];
-    var level = 1;	// 1 is lowest level
+    var level = 1;	
 	var countSquares = [36,36,34,32,31,30];
 	var gameFinished = false;
 	function shuffleBoard()
