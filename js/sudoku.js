@@ -198,7 +198,7 @@ window.sudoku = function(){
             checkRows(correct) &&
             checkSquare(correct)) {
 				showAlert('Շնորհավորում եմ։ Դուք հաղթահարեցիք նաև երկրորդ փուլը!!!!!');
-				stages.eq(2).data('gameName','next');
+				stages.eq(2).data('gameName','numberGame');
 				showAlert(timer.end());
         }
 

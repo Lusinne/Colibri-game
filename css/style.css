@@ -123,10 +123,12 @@ body{
 	-webkit-justify-content: space-between;
 	justify-content: space-between;
 	padding: 2%;
+	z-index: 99999;
 }
 .prompt div{
 	font-size: 2em;
 	color: #E7E9E7;
+	z-index: 999;
 }
 .answer{
 	text-align: right !important;
@@ -139,7 +141,7 @@ body{
 	border-radius: 20px;
 	margin-left: 20px;
 }
-.answer button:hover{
+.answer button:hover, .answer button:focus{
 	color: rgb(7,60,118);
 	background: #E7E9E7;
 	border-color: #E7E9E7;

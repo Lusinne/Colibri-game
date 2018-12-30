@@ -1,0 +1,50 @@
+#big{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	height: 100%;
+}
+#questions{
+	height: calc(100vh - 50px);
+	overflow: hidden;
+}
+input{
+	width: 200px;
+	padding: 10px;
+	border-radius: 10px;
+	height: 50px;
+	display: block;
+	border: 0;
+	background: transparent;
+    color: white;
+
+}
+input::placeholder{
+	text-align: center;
+	color: rgba(255,255,255,1);
+}
+.a{
+	width: 130px;
+	top: 0;
+	font-size: 0;
+	text-align: center;
+	border: 0 solid green;
+	margin: 10px 0;
+	border-radius: 5px;
+	box-sizing: border-box;
+	position: absolute;
+	background: transparent;
+    color: white;
+}
+#miniSection{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+#points{
+    font-size: 2em;
+    color: white;
+}
