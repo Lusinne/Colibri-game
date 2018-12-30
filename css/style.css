@@ -127,6 +127,7 @@ body{
 .prompt div{
 	font-size: 2em;
 	color: #E7E9E7;
+	z-index: 999;
 }
 .answer{
 	text-align: right !important;
