@@ -105,7 +105,7 @@ $(document).ready(function(){
             $(piece).css({
                 'top': (Math.floor(Math.random()*(parseInt(section.css('height'))-100))*90/screen.height)+ '%',
                 'left':( Math.floor(Math.random()*(parseInt(section.css('width'))-100))*90/screen.width) + '%',
-                'background': 'url(images/puzzle/'+pieces[i]+')',
+                'background': 'url(images/'+pieces[i]+')',
                 'background-size': 'cover',
                 'transform': 'rotate(' +Math.floor(Math.random()*180) + 'deg)'
             });
