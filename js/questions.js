@@ -47,8 +47,6 @@
 
             set.push(setInterval(function(){
                 let divs = $('.a:last');
-                // console.log($(''))
-                // if(!($('.game').length)) return;
                 if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= $('input').position().top){
                     clearInterval(int)
                     $('.a').stop(true,false)
