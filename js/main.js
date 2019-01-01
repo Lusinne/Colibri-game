@@ -1,4 +1,12 @@
 $(document).ready(function(){
+    $(window).on('keydown', function(ev){
+        (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which ==83))) && ev.preventDefault();
+        if(ev.ctrlKey && ev.which === 85) return;
+    })
+    $(window).on('contextmenu', function(ev){
+        ev.preventDefault();
+    })
+
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
     stages.one('click',openGame);
@@ -28,13 +36,19 @@ $(document).ready(function(){
 
         let closeButton = $('#close');
         closeButton.one('click',function  closeGame(ev){
-            let div = $('<section class="prompt"><div>Վստահ ես?</div></section>');
+            let div = $('<section class="prompt"><div>Անջատե՞լ խաղը:</div></section>');
             let answer = $('<div class="answer"><button id="Ok">Այո</button><button id="Cancel">Ոչ</button></div>');
             $(document.body).append(div.append(answer));
+            $('#Ok').focus();
+            $(document).on('keyup', 'button', function(ev){
+                ev.which === 37 && $('#Ok').focus(); 
+                ev.which === 39 && $('#Cancel').focus(); 
+            })
 
             let promise = new Promise(function(resolve, reject){
                 div.on('click',function(ev){
                     let el = ev.target;
+                    $(document).stop();
                     if(el.getAttribute('id') == 'Ok') resolve(el);
                     else if(el.getAttribute('id') == 'Cancel') reject(el);
                 })
@@ -55,11 +69,12 @@ $(document).ready(function(){
                         left: '100%',
                         width: '-=10%',
                         height: '-=10vh',
-                        // display: 'none',
                     }, 1000 , function(){
                         section.remove();
                         closeButton.off('click');
                         stages.one('click',openGame);
+                        $(document).off('keyup', 'button');
+
                     })
 
                 })
@@ -145,7 +160,7 @@ $(document).ready(function(){
                             duration: '5s'
                         }, 'linear');
                         if($('#puzzle .piece').length === pieces.length){
-                            showAlert('Շնորհավոոոոոոոոոր դուք հաղթահարեցիք առաջին փուլը <br>' + timer.end());
+                            showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + timer.end());
                             openNextStage(1,'sudoku');
                         }
                         $(this).off('mousedown touchstart');
@@ -161,7 +176,7 @@ $(document).ready(function(){
         let section = $('.game');
         let bigDiv = $('<div id="ballonBox"></div>');
         let game = $('<div id="ballonGame"></div>');
-        let score = $('<div><h2>Score: 0</h2></div>');
+        let score = $('<div><h2>Ձեր հաշիվը՝ 0</h2></div>');
         let title = $('<h2>Level 4: Ballons</h2>');
         let o = 0;
         let speed = 10000;
@@ -183,7 +198,7 @@ $(document).ready(function(){
                 el.stop();
                 if(o >= 50){
                     showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + o + ' միավոր');
-                }else{
+                }else if($('.game').length){
                     showAlert('Ձեզ պակասում է ' + (20 - o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
                 }
                 $('#ballonGame div').stop();
@@ -208,7 +223,7 @@ $(document).ready(function(){
                section.append(bon);
                bon.animate({fontSize: '1.5em', color: 'transparent'}, 1000, function(){bon.remove()});
             }
-            score.html('<h2>Score: ' + o + '</h2>');
+            score.html('<h2>Ձեր հաշիվը՝ ' + o + '</h2>');
             if(o / 20 >= level){
                let newLevel = $('<h2>Մակարդակ ' + ++level + ' </h2>');
                newLevel.css({position: 'absolute', top: '10px'});
@@ -229,6 +244,7 @@ $(document).ready(function(){
         let but = $('<button>Ok</button>');
         but.one('click',function(){div.remove()});
         $(document.body).append(div.append(answer.append(but)));
+        but.focus();
     };
     function openNextStage(num,name){
         stages.eq(num).data('gameName',name);

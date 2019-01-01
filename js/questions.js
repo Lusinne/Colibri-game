@@ -47,7 +47,7 @@
 
             set.push(setInterval(function(){
                 let divs = $('.a:last');
-                if((divs.position().top + parseInt(divs.css('height'))*1.3)  >= $('input').position().top){
+                if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= $('input').position().top){
                     clearInterval(int)
                     $('.a').stop(true,false)
                     $('input').prop('disabled', true);
@@ -55,7 +55,7 @@
                         clearInterval(v);
                     })
                     if(count >= 40){
-                        showAlert('Շնորհավոոոոոոոոոր դուք հաղթահարեցիք երրորդ փուլը <br> Դուք հավաքել եք '+count+' միավոր');
+                        showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br> Դուք հավաքել եք '+count+' միավոր');
                         stages.eq(3).data('gameName','ballons');
                     }else{
                         showAlert('Կրկին փորձիր');
