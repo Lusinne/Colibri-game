@@ -17,6 +17,7 @@
                 count++;
                 points.html('Ձեր հաշիվը՝ ' + count)
                 if(count % 10 === 0){
+                    count += 5;
                     clearInterval(int);
                     randomMultiple *= 10;
                     console.log(randomMultiple)
@@ -58,7 +59,7 @@
                         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br> Դուք հավաքել եք '+count+' միավոր');
                         stages.eq(3).data('gameName','ballons');
                     }else{
-                        showAlert('Կրկին փորձիր');
+                        showAlert('Ձեզ պակասում է \'+ 40 - count +\' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
                     }
                 }
             },150))
