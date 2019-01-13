@@ -12,20 +12,21 @@
         let set = [];
         let int = setInterval(create, t,randomMultiple);
         $('input').on('keyup',function(){
-            if($(this).val() == $('.a:last').text()){
-                $('.a:last').remove();
+            let alast = $('.a:last');
+            if($(this).val() === alast.text()){
+                alast.remove();
                 count++;
-                points.html('Ձեր հաշիվը՝ ' + count)
+                points.html('Ձեր հաշիվը՝ ' + count);
                 if(count % 10 === 0){
+                    count += 5;
                     clearInterval(int);
                     randomMultiple *= 10;
-                    console.log(randomMultiple)
+                    //console.log(randomMultiple);
                     int = setInterval(create,t-100,randomMultiple)
                 }
                 $(this).val('');
             }
-        })
-
+        });
 
         function create(randomMultiple){
             let div = $('<div class="a" style="position:relative;">'+Math.floor(Math.random()*randomMultiple)+'</div>');
@@ -47,18 +48,19 @@
 
             set.push(setInterval(function(){
                 let divs = $('.a:last');
-                if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= $('input').position().top){
-                    clearInterval(int)
-                    $('.a').stop(true,false)
-                    $('input').prop('disabled', true);
-                    set.forEach((v)=>{
+                let input = $('input');
+                if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= input.position().top){
+                    clearInterval(int);
+                    $('.a').stop(true,false);
+                    input.prop('disabled', true);
+                    set.forEach(v =>{
                         clearInterval(v);
-                    })
+                    });
                     if(count >= 40){
                         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br> Դուք հավաքել եք '+count+' միավոր');
-                        stages.eq(3).data('gameName','ballons');
+                        stages.eq(3).data('gameName', 'ballons');
                     }else{
-                        showAlert('Կրկին փորձիր');
+                        showAlert('Ձեզ պակասում է '+ (40 - count) +' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
                     }
                 }
             },150))

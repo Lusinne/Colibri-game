@@ -127,6 +127,7 @@ window.sudoku = function(){
 	
 	function isGameFinished()
 	{
+		if(gameFinished) return;
 		var obj = document.getElementById('sudoku');
         let correct = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -151,8 +152,6 @@ window.sudoku = function(){
             }
             return bool;
         }
-
-        // ;
         function checkRows(correct) {
             let bool = true;
             for (let i = 0; i < 9; i++) {
@@ -177,7 +176,6 @@ window.sudoku = function(){
             let bool = true;
             for (let i = 0; i < 9; i++) {
                 let rows = obj.querySelectorAll("div>div[id$='_" + i + "']");
-                console.log(rows);
                 let squareList = [];
                 for (let j = 0; j < rows.length; j++) {
                     if (rows[j].style.backgroundColor) {
@@ -197,6 +195,7 @@ window.sudoku = function(){
         if (checkColumn(correct) &&
             checkRows(correct) &&
             checkSquare(correct)) {
+           		gameFinished = true;
 				showAlert('Շնորհավորում եմ։ Դուք հաղթահարեցիք նաև երկրորդ փուլը!!!!!');
 				stages.eq(2).data('gameName','numberGame');
 				showAlert(timer.end());
