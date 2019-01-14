@@ -1,11 +1,10 @@
 $(document).ready(function(){
     $(window).on('keydown', function(ev){
-        (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which ==83))) && ev.preventDefault();
-        if(ev.ctrlKey && ev.which === 85) return;
-    })
+        // (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which === 83 || ev.which === 73 && ev.shiftKey))) && ev.preventDefault();
+    });
     $(window).on('contextmenu', function(ev){
         ev.preventDefault();
-    })
+    });
 
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
@@ -17,6 +16,7 @@ $(document).ready(function(){
         stages.off('click');
         let section = $('<section class="game"></section>');
         let close = $('<button id="close">X</button>');
+        let game;
         section.append(close);
         $(document.body).append(section);
         section.animate({
@@ -29,33 +29,36 @@ $(document).ready(function(){
             switch($(el).data('gameName')){
                 case 'puzzle': puzzle(); break;
                 case 'sudoku': sudoku(); break;
-                case 'ballons': ballons(); break;
+                case 'ballons': game = new Ballons(); break;
                 case 'numberGame': questions(); break;
             }
         });
 
         let closeButton = $('#close');
         closeButton.one('click',function  closeGame(ev){
-            let div = $('<section class="prompt"><div>Անջատե՞լ խաղը:</div></section>');
+            let full = $('<section class="promptContain"></section>');
+            let div = $('<div class="prompt"><div>Անջատե՞լ խաղը:</div></div>');
             let answer = $('<div class="answer"><button id="Ok">Այո</button><button id="Cancel">Ոչ</button></div>');
-            $(document.body).append(div.append(answer));
+            $(document.body).append(full.append(div.append(answer)));
             $('#Ok').focus();
             $(document).on('keyup', 'button', function(ev){
                 ev.which === 37 && $('#Ok').focus(); 
                 ev.which === 39 && $('#Cancel').focus(); 
-            })
+            });
 
             let promise = new Promise(function(resolve, reject){
                 div.on('click',function(ev){
                     let el = ev.target;
                     $(document).stop();
-                    if(el.getAttribute('id') == 'Ok') resolve(el);
-                    else if(el.getAttribute('id') == 'Cancel') reject(el);
+                    if(el.getAttribute('id') === 'Ok') resolve(el);
+                    else if(el.getAttribute('id') === 'Cancel') reject(el);
                 })
 
             });
 
             promise.then(function(){
+                game && game.endGame();
+                game = null;
                 section.html('');
                 div.remove();
                 section && section.animate({
@@ -71,6 +74,7 @@ $(document).ready(function(){
                         height: '-=10vh',
                     }, 1000 , function(){
                         section.remove();
+                        full.remove();
                         closeButton.off('click');
                         stages.one('click',openGame);
                         $(document).off('keyup', 'button');
@@ -79,7 +83,7 @@ $(document).ready(function(){
 
                 })
             },function(){
-                div.remove();
+                full.remove();
                 closeButton.one('click',closeGame);
             });
 
@@ -168,51 +172,75 @@ $(document).ready(function(){
                 }
                 $(document).off('mousemove touchmove');
             });
-
-        })
+        });
     }
 
-    function ballons(){
+    function Ballons(){
         let section = $('.game');
         let bigDiv = $('<div id="ballonBox"></div>');
         let game = $('<div id="ballonGame"></div>');
         let score = $('<div><h2>Ձեր հաշիվը՝ 0</h2></div>');
         let title = $('<h2>Level 4: Ballons</h2>');
-        let o = 0;
+        this.o = 0;
+        this.balls = [];
         let speed = 10000;
         let speedBalloon = 1000;
         let level = 1;
         let balloon=['blue-balloon.png','green-Balloon.gif','red-balloon.png','fish.png'];
         let l = balloon.length;
-        let start = setInterval(function(){
-            let bal = Math.floor(Math.random() * l);
-            let el = $('<div><img src="images/ballon_game/'+ balloon[bal] + '"></div>');
-            if(bal === l - 1) el.attr('data-value', 1);
-            game.append(el);
+        let self = this;
+        this.start = setInterval(addBallons,speedBalloon);
+        function addBallons(){
+            self.balls.push(new CreateBall());
+        }
+        function CreateBall(){
+            let i = Math.floor(Math.random() * l);
+            this.el = $('<div><img src="images/ballon_game/'+ balloon[i] + '"></div>');
+            let bal = this.el;
+            if(i === l - 1){
+                bal.attr('data-value', 1);
+                bal.bonus = true;
+            }
+            game.append(bal);
             let left = (Math.random()) * 90;
             let top = (Math.random()) * 50;
-            el.css({'left' : left + '%', 'bottom' : top + '%'});
-            el.animate({top: '0', height: '50px', width: '50px'
+            bal.css({'left' : left + '%', 'bottom' : top + '%'});
+            bal.animate({top: '0', height: '50px', width: '50px'
             }, speed, function(){
-                clearInterval(start);
-                el.stop();
-                if(o >= 50){
-                    showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + o + ' միավոր');
-                }else if($('.game').length){
-                    showAlert('Ձեզ պակասում է ' + (20 - o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
+                if(bal.bonus){
+                    bal.remove();
+                    return;
                 }
-                $('#ballonGame div').stop();
-                $('section img').remove();
+                playAgainButton(function(){
+                    section.append(bigDiv.append(title,game,score));
+                    self.start = setInterval(addBallons,speedBalloon);
+                    score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
+                });
+                if(self.o >= 50){
+                    showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + self.o + ' միավոր');
+                }else if($('.game').length){
+                    showAlert('Ձեզ պակասում է ' + (20 - self.o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
+                }
+                self.endGame();
             });
-
-        },speedBalloon);
-
+            bal.on('dragstart', function(e){e.preventDefault()})
+        }
+        this.endGame = function(){
+            self.o = 0;
+            speed = 10000;
+            speedBalloon = 1000;
+            level = 1;
+            self.balls.forEach(function(v){v.el.stop()});
+            self.balls = [];
+            clearInterval(self.start);
+            game.empty();
+        };
         game.on("click", 'div', function(ev){
             $(this).stop();
             $(this).remove();
-            o++;
-            if (this.dataset.value == 1){
-                o++;
+            self.o++;
+            if (this.dataset.value === '1'){
+                self.o++;
                 let bon = $('<span>Բոնուս +2</span>');
                 bon.css({
                     position: 'absolute',
@@ -220,30 +248,33 @@ $(document).ready(function(){
                     left: ev.pageX - 30 + 'px',
                     color: '#fff'
                 });
-               section.append(bon);
-               bon.animate({fontSize: '1.5em', color: 'transparent'}, 1000, function(){bon.remove()});
+                section.append(bon);
+                bon.animate({fontSize: '1.5em', color: 'transparent'}, 1000, function(){bon.remove()});
             }
-            score.html('<h2>Ձեր հաշիվը՝ ' + o + '</h2>');
-            if(o / 20 >= level){
-               let newLevel = $('<h2>Մակարդակ ' + ++level + ' </h2>');
-               newLevel.css({position: 'absolute', top: '10px'});
-               section.append(newLevel);
-               newLevel.animate({fontSize: '3em', color: 'transparent'}, 1000, function(){newLevel.remove()});
-               if(speed > 500) speed -= 500;
-               if(speedBalloon > 300) speedBalloon -= 300;
+            score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
+            if(self.o / 20 >= level){
+                let newLevel = $('<h2>Մակարդակ ' + ++level + ' </h2>');
+                newLevel.css({position: 'absolute', top: '10px'});
+                section.append(newLevel);
+                newLevel.animate({fontSize: '3em', color: 'transparent'}, 1000, function(){newLevel.remove()});
+                if(speedBalloon > 300){
+                    speedBalloon -= 100;
+                    clearInterval(self.start);
+                    self.start = setInterval(addBallons,speedBalloon);
+                }
             }
         });
-
         section.append(bigDiv.append(title,game,score));
-
     }
 
     window.showAlert = function(val){
-        let div = $('<section class="prompt"><div>' + val + '</div></section>');
+        let section = $('<section class="promptContain"></section>');
+        let div = $('<div class="prompt"><div>' + val + '</div></div>');
         let answer = $('<div class="answer"></div>');
         let but = $('<button>Ok</button>');
-        but.one('click',function(){div.remove()});
-        $(document.body).append(div.append(answer.append(but)));
+        but.one('click',function(){section.remove()});
+
+        $(document.body).append(section.append(div.append(answer.append(but))));
         but.focus();
     };
     function openNextStage(num,name){
@@ -286,6 +317,14 @@ $(document).ready(function(){
     };
     function addZero(a){
         return (a < 10) ? '0' + a : a;
+    }
+    function playAgainButton(f){
+        let but = $('<div class = "again">Նորից խաղալ</div>');
+        $('section.game').append(but);
+        but.one('click', function(){
+            f();
+            but.remove();
+        });
     }
 
 });
