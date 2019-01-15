@@ -56,8 +56,8 @@
                         clearInterval(v);
                     });
                     if(count >= 40){
-                        showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br> Դուք հավաքել եք '+count+' միավոր');
-                        stages.eq(3).data('gameName', 'ballons');
+                        openNextStage(2,'ballons');
+                        showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + count + ' միավոր', 2);
                     }else{
                         showAlert('Ձեզ պակասում է '+ (40 - count) +' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
                     }

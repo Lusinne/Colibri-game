@@ -8,9 +8,9 @@ $(document).ready(function(){
 
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
-    stages.eq(1).data('gameName','sudoku');
-    stages.eq(2).data('gameName','numberGame');
-    stages.eq(3).data('gameName','ballons');
+    stages.eq(1).data('gameName','numberGame');
+    stages.eq(2).data('gameName','ballons');
+    // stages.eq(3).data('gameName','sudoku');
     stages.one('click',openGame);
 
     function openGame(e){
@@ -36,7 +36,7 @@ $(document).ready(function(){
                     showRules(section, rules, puzzle);
                     break;
                 case 'sudoku':
-                    rules = 'sudku';
+                    rules = 'sudoku';
                     showRules(section, rules, sudoku);
                     break;
                 case 'ballons':
@@ -149,7 +149,6 @@ $(document).ready(function(){
         }
 
         $('.piece').on('mousedown touchstart',function(e){
-            console.log($(this).data('num'));
             let top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
             let thisPiece = $(this);
             thisPiece.addClass('higher');
@@ -180,8 +179,8 @@ $(document).ready(function(){
                             duration: '5s'
                         }, 'linear');
                         if($('#puzzle .piece').length === pieces.length){
-                            showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + timer.end());
-                            openNextStage(1,'sudoku');
+                            openNextStage(1,'numberGame');
+                            showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + timer.end(), 1);
                         }
                         $(this).off('mousedown touchstart');
                     }
@@ -233,7 +232,8 @@ $(document).ready(function(){
                     score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
                 });
                 if(self.o >= 100){
-                    showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + self.o + ' միավոր');
+                    openNextStage(3,'sudoku');
+                    showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br>  Դուք հավաքել եք ' + self.o + ' միավոր', 3);
                 }else if($('.game').length){
                     showAlert('Ձեզ պակասում է ' + (100 - self.o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
                 }
@@ -283,19 +283,24 @@ $(document).ready(function(){
         section.append(bigDiv.append(title,game,score));
     }
 
-    window.showAlert = function(val){
+    window.showAlert = function(val, i = null){
         let section = $('<section class="promptContain"></section>');
         let div = $('<div class="prompt"><div>' + val + '</div></div>');
         let answer = $('<div class="answer"></div>');
         let but = $('<button>Ok</button>');
-        but.one('click',function(){section.remove()});
+        but.one('click',function(){
+            section.remove();
+            if(i) $('.game').fadeOut(1000,function(){$('.game').remove(); stages.eq(i).trigger('click')});
+        });
 
         $(document.body).append(section.append(div.append(answer.append(but))));
+
         but.focus();
     };
-    function openNextStage(num,name){
+    window.openNextStage = function(num,name){
         stages.eq(num).data('gameName',name);
-    }
+        stages.one('click',openGame);
+    };
 
     window.countScore = function(where){
         let watch = $('<h2></h2>');
@@ -346,10 +351,12 @@ $(document).ready(function(){
         let div = $('<div class="rules"><div class="ruleList">' + str + '</div></div>');
         let btn = $('<div class="start">Սկսել</div>');
         where.append(div.append(btn));
-        btn.one('click', function(){
+        btn.one('click', start);
+
+        function start(){
             div.remove();
             fn();
-        })
+        }
     }
 });
 
