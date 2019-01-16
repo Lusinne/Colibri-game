@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $(window).on('keydown', function(ev){
-        // (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which === 83 || ev.which === 73 && ev.shiftKey))) && ev.preventDefault();
+        (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which === 83 || ev.which === 73 && ev.shiftKey))) && ev.preventDefault();
     });
     $(window).on('contextmenu', function(ev){
         ev.preventDefault();
@@ -8,6 +8,9 @@ $(document).ready(function(){
 
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
+    // stages.eq(1).data('gameName','numberGame');
+    // stages.eq(2).data('gameName','ballons');
+    // stages.eq(3).data('gameName','sudoku');
     stages.one('click',openGame);
 
     function openGame(e){
@@ -26,11 +29,24 @@ $(document).ready(function(){
             top: '4%',
             left: '5%'
         },1000, function(){
+            let rules;
             switch($(el).data('gameName')){
-                case 'puzzle': puzzle(); break;
-                case 'sudoku': sudoku(); break;
-                case 'ballons': game = new Ballons(); break;
-                case 'numberGame': questions(); break;
+                case 'puzzle':
+                    rules = 'puzzle';
+                    showRules(section, rules, puzzle);
+                    break;
+                case 'sudoku':
+                    rules = 'sudoku';
+                    showRules(section, rules, sudoku);
+                    break;
+                case 'ballons':
+                    rules = 'ballons';
+                    showRules(section, rules, function(){game = new Ballons();});
+                    break;
+                case 'numberGame':
+                    rules = 'numberGame';
+                    showRules(section, rules, questions);
+                    break;
             }
         });
 
@@ -133,7 +149,6 @@ $(document).ready(function(){
         }
 
         $('.piece').on('mousedown touchstart',function(e){
-            console.log($(this).data('num'));
             let top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
             let thisPiece = $(this);
             thisPiece.addClass('higher');
@@ -164,8 +179,8 @@ $(document).ready(function(){
                             duration: '5s'
                         }, 'linear');
                         if($('#puzzle .piece').length === pieces.length){
-                            showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + timer.end());
-                            openNextStage(1,'sudoku');
+                            openNextStage(1,'numberGame');
+                            showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + timer.end(), 1);
                         }
                         $(this).off('mousedown touchstart');
                     }
@@ -204,22 +219,23 @@ $(document).ready(function(){
             game.append(bal);
             let left = (Math.random()) * 90;
             let top = (Math.random()) * 50;
-            bal.css({'left' : left + '%', 'bottom' : top + '%'});
-            bal.animate({top: '0', height: '50px', width: '50px'
+            bal.css({'left' : left + '%', 'top' : 100 - top + '%'});
+            bal.animate({top: '-=' + (100 - top) + '%', height: '50px', width: '50px'
             }, speed, function(){
                 if(bal.bonus){
                     bal.remove();
                     return;
                 }
-                playAgainButton(function(){
-                    section.append(bigDiv.append(title,game,score));
-                    self.start = setInterval(addBallons,speedBalloon);
-                    score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
-                });
-                if(self.o >= 50){
-                    showAlert('Խաղն ավարտվեց: Դուք հավաքել եք ' + self.o + ' միավոր');
+                if(self.o >= 100){
+                    openNextStage(3,'sudoku');
+                    showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br>  Դուք հավաքել եք ' + self.o + ' միավոր', 3);
                 }else if($('.game').length){
-                    showAlert('Ձեզ պակասում է ' + (20 - self.o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
+                    showAlert('Ձեզ պակասում է ' + (100 - self.o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
+                    playAgainButton(function(){
+                        section.append(bigDiv.append(title,game,score));
+                        self.start = setInterval(addBallons,speedBalloon);
+                        score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
+                    });
                 }
                 self.endGame();
             });
@@ -235,7 +251,7 @@ $(document).ready(function(){
             clearInterval(self.start);
             game.empty();
         };
-        game.on("click", 'div', function(ev){
+        game.on("mousedown", 'div', function(ev){
             $(this).stop();
             $(this).remove();
             self.o++;
@@ -254,7 +270,7 @@ $(document).ready(function(){
             score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
             if(self.o / 20 >= level){
                 let newLevel = $('<h2>Մակարդակ ' + ++level + ' </h2>');
-                newLevel.css({position: 'absolute', top: '10px'});
+                newLevel.css({position: 'absolute', top: '10px', left: 0, width: '100%'});
                 section.append(newLevel);
                 newLevel.animate({fontSize: '3em', color: 'transparent'}, 1000, function(){newLevel.remove()});
                 if(speedBalloon > 300){
@@ -267,19 +283,24 @@ $(document).ready(function(){
         section.append(bigDiv.append(title,game,score));
     }
 
-    window.showAlert = function(val){
+    window.showAlert = function(val, i){
         let section = $('<section class="promptContain"></section>');
         let div = $('<div class="prompt"><div>' + val + '</div></div>');
         let answer = $('<div class="answer"></div>');
         let but = $('<button>Ok</button>');
-        but.one('click',function(){section.remove()});
+        but.one('click',function(){
+            section.remove();
+            if(i) $('.game').fadeOut(1000,function(){$('.game').remove(); stages.eq(i).trigger('click')});
+        });
 
         $(document.body).append(section.append(div.append(answer.append(but))));
+
         but.focus();
     };
-    function openNextStage(num,name){
+    window.openNextStage = function(num,name){
         stages.eq(num).data('gameName',name);
-    }
+        stages.one('click',openGame);
+    };
 
     window.countScore = function(where){
         let watch = $('<h2></h2>');
@@ -318,14 +339,26 @@ $(document).ready(function(){
     function addZero(a){
         return (a < 10) ? '0' + a : a;
     }
-    function playAgainButton(f){
-        let but = $('<div class = "again">Նորից խաղալ</div>');
-        $('section.game').append(but);
-        but.one('click', function(){
+    window.playAgainButton = function (f){
+        let but = $('<div class = "again"><span>Նորից խաղալ</span></div>');
+        $('.game').append(but);
+        $('.again>span').one('click', function(){
             f();
             but.remove();
         });
-    }
+    };
+    function showRules(where,str,fn){
+        let div = $('<div class="rules"><div class="ruleList">' + str + '</div></div>');
+        let btn = $('<div class="start">Սկսել</div>');
+        where.append(div.append(btn));
+        btn.one('click', start);
 
+        function start(){
+            div.remove();
+            fn();
+        }
+    }
 });
+
+
 

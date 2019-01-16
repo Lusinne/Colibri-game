@@ -2,15 +2,16 @@
     window.questions = function(){
         let section = $('.game');
         let bigDiv = $('<div id="miniSection"></div>');
-        let points = $('<div id="points">Ձեր հաշիվը՝</div>');
+        let points = $('<div id="points">Ձեր հաշիվը՝ 0</div>');
         let title = $('<h2>Level 3: Number Game</h2>');
-        let big = $('<div id="big"><div id="questions"></div><input id="input" type="text" autofocus placeholder="Նշեք ճիշտ պատասխանը"></div>')
+        let big = $('<div id="big"><div id="questions"></div><input id="input" type="text" autofocus="autofocus" placeholder="Նշեք ճիշտ պատասխանը"></div>')
         section.append(bigDiv.append(title,big,points));
+        $('#input')[0].focus();
         let count = 0;
         let randomMultiple = 100;
         let t = 1500;
         let set = [];
-        let int = setInterval(create, t,randomMultiple);
+        let int = setInterval(create, t, randomMultiple);
         $('input').on('keyup',function(){
             let alast = $('.a:last');
             if($(this).val() === alast.text()){
@@ -21,13 +22,11 @@
                     count += 5;
                     clearInterval(int);
                     randomMultiple *= 10;
-                    //console.log(randomMultiple);
                     int = setInterval(create,t-100,randomMultiple)
                 }
                 $(this).val('');
             }
         });
-
         function create(randomMultiple){
             let div = $('<div class="a" style="position:relative;">'+Math.floor(Math.random()*randomMultiple)+'</div>');
             div.animate({
@@ -53,14 +52,26 @@
                     clearInterval(int);
                     $('.a').stop(true,false);
                     input.prop('disabled', true);
-                    set.forEach(v =>{
+                    set.forEach(function(v){
                         clearInterval(v);
                     });
                     if(count >= 40){
-                        showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br> Դուք հավաքել եք '+count+' միավոր');
-                        stages.eq(3).data('gameName', 'ballons');
+                        openNextStage(2,'ballons');
+                        showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + count + ' միավոր', 2);
                     }else{
                         showAlert('Ձեզ պակասում է '+ (40 - count) +' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
+                        $('#questions').html('');
+                        playAgainButton(function(){
+                            input.prop('disabled', false);
+                            count = 0;
+                            randomMultiple = 100;
+                            t = 1500;
+                            set = [];
+                            points.html('Ձեր հաշիվը՝ ' + count);
+                            int = setInterval(create, t, randomMultiple);
+                            input[0].focus();
+
+                        })
                     }
                 }
             },150))

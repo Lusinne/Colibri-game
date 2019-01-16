@@ -9,7 +9,7 @@
 	height: calc(100vh - 50px);
 	overflow: hidden;
 }
-input{
+#miniSection input{
 	width: 200px;
 	padding: 10px;
 	border-radius: 10px;
@@ -20,7 +20,7 @@ input{
     color: white;
 
 }
-input::placeholder{
+#miniSection input::placeholder{
 	text-align: center;
 	color: rgba(255,255,255,1);
 }
