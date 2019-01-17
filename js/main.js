@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $(window).on('keydown', function(ev){
-        // (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which === 83 || ev.which === 73 && ev.shiftKey))) && ev.preventDefault();
+        (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which === 83 || ev.which === 73 && ev.shiftKey))) && ev.preventDefault();
     });
     $(window).on('contextmenu', function(ev){
         ev.preventDefault();
@@ -9,7 +9,7 @@ $(document).ready(function(){
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
     stages.eq(1).data('gameName','numberGame');
-    stages.eq(2).data('gameName','ballons');
+    // stages.eq(2).data('gameName','ballons');
     // stages.eq(3).data('gameName','sudoku');
     stages.one('click',openGame);
 
@@ -45,7 +45,7 @@ $(document).ready(function(){
                     break;
                 case 'numberGame':
                     rules = 'numberGame';
-                    showRules(section, rules, questions);
+                    showRules(section, rules, function(){game = new Questions();});
                     break;
             }
         });
@@ -226,16 +226,16 @@ $(document).ready(function(){
                     bal.remove();
                     return;
                 }
-                playAgainButton(function(){
-                    section.append(bigDiv.append(title,game,score));
-                    self.start = setInterval(addBallons,speedBalloon);
-                    score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
-                });
                 if(self.o >= 100){
                     openNextStage(3,'sudoku');
                     showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br>  Դուք հավաքել եք ' + self.o + ' միավոր', 3);
                 }else if($('.game').length){
                     showAlert('Ձեզ պակասում է ' + (100 - self.o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
+                    playAgainButton(function(){
+                        section.append(bigDiv.append(title,game,score));
+                        self.start = setInterval(addBallons,speedBalloon);
+                        score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
+                    });
                 }
                 self.endGame();
             });
@@ -270,7 +270,7 @@ $(document).ready(function(){
             score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
             if(self.o / 20 >= level){
                 let newLevel = $('<h2>Մակարդակ ' + ++level + ' </h2>');
-                newLevel.css({position: 'absolute', top: '10px'});
+                newLevel.css({position: 'absolute', top: '10px', left: 0, width: '100%'});
                 section.append(newLevel);
                 newLevel.animate({fontSize: '3em', color: 'transparent'}, 1000, function(){newLevel.remove()});
                 if(speedBalloon > 300){
@@ -283,7 +283,7 @@ $(document).ready(function(){
         section.append(bigDiv.append(title,game,score));
     }
 
-    window.showAlert = function(val, i = null){
+    window.showAlert = function(val, i){
         let section = $('<section class="promptContain"></section>');
         let div = $('<div class="prompt"><div>' + val + '</div></div>');
         let answer = $('<div class="answer"></div>');
@@ -339,14 +339,36 @@ $(document).ready(function(){
     function addZero(a){
         return (a < 10) ? '0' + a : a;
     }
-    function playAgainButton(f){
-        let but = $('<div class = "again">Նորից խաղալ</div>');
-        $('section.game').append(but);
-        but.one('click', function(){
+    window.playAgainButton = function (f){
+        let but = $('<div class = "again"><span>Նորից խաղալ</span></div>');
+        $('.game').append(but);
+        $('.again>span').one('click', function(){
             f();
             but.remove();
         });
-    }
+    };
+
+    window.addNumButtons = function(where, fnTodo, del){
+        let numList = $('<div class="numList"></div>');
+        for(let i = 1; i < 10; i++){
+            let btn = $('<div class="numButton">' + i + '</div>');
+            numList.append(btn);
+            btn.on('click',fnTodo);
+        }
+        let btn = $('<div class="numButton">0</div>');
+        btn.on('click',fnTodo);
+        let back = $('<div class="numButton"><i class="fas fa-arrow-left"></i></div>');
+        back.on('click',del);
+        where.append(numList.append(btn,back));
+        numList.css('display', 'none');
+        return numList;
+    };
+
+    window.removeNumButtons = function(){
+        $('.numButton').off('click');
+        $('.numList').remove();
+    };
+
     function showRules(where,str,fn){
         let div = $('<div class="rules"><div class="ruleList">' + str + '</div></div>');
         let btn = $('<div class="start">Սկսել</div>');
