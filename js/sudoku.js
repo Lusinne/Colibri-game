@@ -1,8 +1,8 @@
 (function(){
 window.sudoku = function(){
-	let bigDiv = $('<div></div>')
+	let bigDiv = $('<div></div>');
 	let sudoku = $('<div class="sudoku" id="sudoku"></div>');
-	let title = $('<h2>Level 2: Sudoku</h2>');
+	let title = $('<h2 class="sudokuh">Level 2: Sudoku</h2>');
 	for(let i = 0, k = 0; i < 9; i++){
         let sudokuSection = $('<div class="sudokuSection" id="sudokuSection' + i + '"></div>');
         for(let j = 0; j < 9; j++, k++){
@@ -12,13 +12,21 @@ window.sudoku = function(){
         sudoku.append(sudokuSection);
     }
     let bottom = $('<div id="hintDiv"><div id="hintDivInner"></div></div><div id="debug" style="position:absolute;left:30px;top:600px"></div>');
+
     $('.game').append(bigDiv.append(title,sudoku.append(bottom)));
     let timer = new countScore(bigDiv);
+    timer.addClass('sudokuh');
     timer.go();
+    if(window.orientation !== undefined){
+        let numButton = addNumButtons($('.game'),insertNumber,insertNumber);
+        numButton.css('display','flex');
+        bigDiv.append(numButton);
+    }
 	var squareObjects = [];
     var level = 1;	
 	var countSquares = [36,36,34,32,31,30];
 	var gameFinished = false;
+
 	function shuffleBoard()
 	{
 		for(var counter = 0; counter < 30; counter++){
@@ -113,10 +121,10 @@ window.sudoku = function(){
 	}
 	var higlightedCell;
 	function highlightSquare(e,inputObj){
-		document.getElementById('hintDiv').style.display='none';
-		if(!inputObj)inputObj = this;	
-		if(inputObj.style.backgroundColor)return;
-		if(gameFinished)return;
+        document.getElementById('hintDiv').style.display='none';
+        if(!inputObj)inputObj = this;
+        if(inputObj.style.backgroundColor)return;
+        if(gameFinished)return;
 		inputObj.className='sudokuSquareHighlighted';
 		if(higlightedCell && higlightedCell!=inputObj)higlightedCell.className='sudokuSquare';
 		higlightedCell = inputObj;
@@ -356,10 +364,14 @@ window.sudoku = function(){
 			if(code==8)return false;
 		}
 		if(code>96 && code<=105)code-=48;
-		if(code>48 && code<=57){				
+		if(code>48 && code<=57){
 			var theChar = String.fromCharCode(code);
 			span.innerHTML = theChar;
-		}		
+		}
+		if(this.classList.contains('numButton')){
+            var theChar = ($(this).text() >=0 ) ? $(this).text() : '';
+            span.innerHTML = theChar;
+		}
 		
 		isGameFinished();
 	}	

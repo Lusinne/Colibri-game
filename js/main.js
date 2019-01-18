@@ -8,9 +8,9 @@ $(document).ready(function(){
 
     window.stages = $('.stages img');
     stages.eq(0).data('gameName','puzzle');
-    // stages.eq(1).data('gameName','numberGame');
-    // stages.eq(2).data('gameName','ballons');
-    // stages.eq(3).data('gameName','sudoku');
+    stages.eq(1).data('gameName','numberGame');
+    stages.eq(2).data('gameName','ballons');
+    stages.eq(3).data('gameName','sudoku');
     stages.one('click',openGame);
 
     function openGame(e){
@@ -22,6 +22,8 @@ $(document).ready(function(){
         let game;
         section.append(close);
         $(document.body).append(section);
+        $('body').css({'overscroll-behavior-y': 'contain', overflow: 'hidden'});
+        $('html').css({'overscroll-behavior-y': 'contain', overflow: 'hidden'});
         section.animate({
             display: 'block',
             width: '+=90%',
@@ -32,20 +34,25 @@ $(document).ready(function(){
             let rules;
             switch($(el).data('gameName')){
                 case 'puzzle':
-                    rules = 'puzzle';
+                    rules = 'Նկարի կտրված մասերը խառը դասավորված են էկրանի վրա: ' +
+                        'Հաջորդ փուլ անցնելու համար պետք է ամբողջական նկարը վերականգնել առավելագույնը 10 րոպեում:';
                     showRules(section, rules, puzzle);
                     break;
                 case 'sudoku':
-                    rules = 'sudoku';
+                    rules = 'ՈՒնենք 9×9 չափի քառակուսի, որը բաժանված է 3×3 չափի քառակուսիների։ Քառակուսին ընդհանուր ունի 81 վանդակ։ ' +
+                        'Պետք է ազատ վանդակները լրացնել 1-9 թվերվ այնպես, որ չհամընկնեն ո՛չ հորիզոնական, ո՛չ ուղղահայաց և ո՛չ էլ 3×3 չափի քառակուսու մեջ։';
                     showRules(section, rules, sudoku);
                     break;
                 case 'ballons':
-                    rules = 'ballons';
+                    rules = 'Էկրանի վրա տարբեր տեղերում հայտնվում են փուչիկներ և բարձրանում են վերև: Պետք է դրանք պայթեցնել՝ չթողնելով, որ հասնեն վերևի սահմանին: ' +
+                    'Յուրաքանչյուր պայթեցված փուչիկի համար տրվում է 1 միավոր: Հաջորդ փուլ անցնելու համար պետք է հավաքել նվազագույնը 100 միավոր:';
                     showRules(section, rules, function(){game = new Ballons();});
                     break;
                 case 'numberGame':
-                    rules = 'numberGame';
-                    showRules(section, rules, questions);
+                    rules = 'Էկրանի վերին հատվածում հայտնվում են պատահական թվեր, որոնք իջնում են ներքև:\n' +
+                        'Թվերը ջնջելու համար պետք է դրանք գրել տեքստային դաշտում: Յուրաքանչյուր ջնջված թվի համար տրվում է 1 միավոր:\n' +
+                        'Հաջորդ փուլ անցնելու համար պետք է հավաքել նվազագույնը 40 միավոր:';
+                    showRules(section, rules, function(){game = new Questions();});
                     break;
             }
         });
@@ -92,6 +99,8 @@ $(document).ready(function(){
                         section.remove();
                         full.remove();
                         closeButton.off('click');
+                        $('body').css({'overscroll-behavior-y': '', overflow: ''});
+                        $('html').css({'overscroll-behavior-y': '', overflow: ''});
                         stages.one('click',openGame);
                         $(document).off('keyup', 'button');
 
@@ -208,6 +217,7 @@ $(document).ready(function(){
         function addBallons(){
             self.balls.push(new CreateBall());
         }
+
         function CreateBall(){
             let i = Math.floor(Math.random() * l);
             this.el = $('<div><img src="images/ballon_game/'+ balloon[i] + '"></div>');
@@ -273,8 +283,9 @@ $(document).ready(function(){
                 newLevel.css({position: 'absolute', top: '10px', left: 0, width: '100%'});
                 section.append(newLevel);
                 newLevel.animate({fontSize: '3em', color: 'transparent'}, 1000, function(){newLevel.remove()});
-                if(speedBalloon > 300){
-                    speedBalloon -= 100;
+                speed = (speed > 500) ? speed - 500 : 100;
+                if(speedBalloon > 200){
+                    speedBalloon -= 200;
                     clearInterval(self.start);
                     self.start = setInterval(addBallons,speedBalloon);
                 }
@@ -331,6 +342,9 @@ $(document).ready(function(){
             watch.append(hours, ' : ', minutes, ' : ', seconds);
             $(where).append(watch);
         };
+        this.addClass = function(a){
+            watch.addClass(a);
+        };
         this.end = function(){
             clearInterval(start);
             return addZero(h) + " : " + addZero(m) + " : " + addZero(s);
@@ -347,6 +361,28 @@ $(document).ready(function(){
             but.remove();
         });
     };
+
+    window.addNumButtons = function(where, fnTodo, del){
+        let numList = $('<div class="numList"></div>');
+        for(let i = 1; i < 10; i++){
+            let btn = $('<div class="numButton">' + i + '</div>');
+            numList.append(btn);
+            btn.on('click',fnTodo);
+        }
+        let btn = $('<div class="numButton">0</div>');
+        btn.on('click',fnTodo);
+        let back = $('<div class="numButton"><i class="fas fa-arrow-left"></i></div>');
+        back.on('click',del);
+        where.append(numList.append(btn,back));
+        numList.css('display', 'none');
+        return numList;
+    };
+
+    window.removeNumButtons = function(){
+        $('.numButton').off('click');
+        $('.numList').remove();
+    };
+
     function showRules(where,str,fn){
         let div = $('<div class="rules"><div class="ruleList">' + str + '</div></div>');
         let btn = $('<div class="start">Սկսել</div>');
