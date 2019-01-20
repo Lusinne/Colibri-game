@@ -18,9 +18,10 @@
 	-ms-user-select: none;
 	user-select: none;
 }
-html, body {
+/*html, body {
 	overscroll-behavior-y: contain;
-}
+	overflow: hidden;
+}*/
 body{
 	height: 100vh;
 	width: 100%;
@@ -176,9 +177,39 @@ body{
     border: 1px solid rgba(0,0,0,0.1);
 }
 .piece{
-    position: absolute;
-    transition: transform 2s;
-	border: 1px solid black;
+	position: absolute;
+	transition: transform 2s;
+}
+.tableBackground{
+	-webkit-animation: background 3s linear;
+	-o-animation: background 3s linear;
+	animation: background 3s linear;
+}
+@keyframes background{
+	10%{
+		background-size: 90%;
+	}
+	20%{
+		background-size: 80%;
+		background-position: top left;
+	}
+	40%{
+		background-size: 60%;
+		background-position: bottom right;
+	}
+	60%{
+		background-size: 40%;
+		background-position: center;
+	}
+	80%{
+		background-size: 20%;
+		background-position: top right;
+	}
+	100%{
+		background-size: 0;
+		background-position: bottom left;
+	}
+
 }
 .higher{
 	z-index: 100;
@@ -191,7 +222,7 @@ body{
 	width: 100%;
 	position: relative;
 	overflow: hidden;
-	cursor:url('../images/ballon_game/needle-32.png'),pointer;
+	cursor:url('../images/ballon_game/needle-32.png'),auto;
 	background-color: rgba(255, 255, 255,.3);
 }
 #ballonGame>div{
@@ -212,11 +243,18 @@ body{
 	left: 0;
 	top: 60%;
 	text-align: center;
-	font-size: 1.5em;
-	color: rgb(7,60,118);
+	font-size: 1.2em;
+	color: #fff;
 }
-.again:hover{
+.again>span{
+	border-radius: 15px;
+	padding: 8px 15px;
+	border: 2px solid;
+}
+.again>span:hover{
 	cursor: pointer;
+	background: #fff;
+	border: #fff;
 	color: rgba(7,60,118,.7);
 }
 .rules{
@@ -227,7 +265,7 @@ body{
 	left: 0;
 	background-color: rgba(7,60,118,.8);
 	background-size: cover;
-	font-size: 2em;
+	font-size: 1.5em;
 	text-align: center;
 	display: flex;
 	flex-direction: column;
@@ -240,6 +278,7 @@ body{
 }
 .ruleList{
 	width: 800px;
+	line-height: 1.3;
 }
 .start{
 	border: 2px solid #fff;
@@ -286,8 +325,8 @@ body{
 	.ruleList{
 		width: 400px;
 	}
-	.rules{
-		font-size: 1.5em;
+	.ruleList,.start,.rules{
+		font-size: 13pt !important;
 	}
 }
 
@@ -302,8 +341,8 @@ body{
 	.ruleList{
 		width: 300px;
 	}
-	.rules{
-		font-size: 1.3em;
+	.ruleList,.start,.rules{
+		font-size: 13pt !important;
 	}
 }
 @media (max-width: 767px) {

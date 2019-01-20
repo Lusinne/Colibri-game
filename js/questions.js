@@ -1,6 +1,3 @@
-jQuery.expr[':'].focus = function( elem ) {
-    return elem === document.activeElement && ( elem.type || elem.href );
-};
 (function(){
     window.Questions = function(){
         this.section = $('.game');
@@ -53,7 +50,7 @@ jQuery.expr[':'].focus = function( elem ) {
         this.play();
 
         function bindEvents(){
-            self.input.on('keyup', checkInput);
+            self.input.on('keydown', checkInput);
             self.input.on('focus', function(){
                 self.numList.css('display', 'none');
             });
@@ -62,19 +59,26 @@ jQuery.expr[':'].focus = function( elem ) {
             })
         }
         function removeEvents(){
-            self.input.off('keyup', checkInput);
+            self.input.off('keydown', checkInput);
         }
 
-        function checkInput(){
+        function checkInput(ev){
+            let code;
+            if (ev.keyCode) code = ev.keyCode; else if (ev.which) code = ev.which;
+            if(code>96 && code<=105)code-=48;
+            if(code <= 48 || code > 57){ev.preventDefault(); return}
+            let val = self.input.val();
             let alast = $('.a:last');
-            if(self.input.val() && self.input.val() === alast.text()){
+            if(val && val === alast.text()){
                 alast.remove();
                 self.count++;
                 self.points.html('Ձեր հաշիվը՝ ' + self.count);
                 if(self.count % 10 === 0){
                     clearInterval(self.int);
                     self.randomMultiple *= 10;
-                    self.int = setInterval(create, self.t - 100, self.randomMultiple)
+                    self.t -= 50;
+                    self.count++;
+                    self.int = setInterval(create, self.t, self.randomMultiple)
                 }
                 self.input.val('');
             }
