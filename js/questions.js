@@ -110,9 +110,10 @@
                 if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= self.input.position().top){
                     self.endGame();
 
-                    if(self.count >= 40){
+                    if(self.count >= 2){
                         openNextStage(2,'ballons');
-                        showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր', 2);
+                        showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր');
+                        chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );
                     }else{
                         showAlert('Ձեզ պակասում է '+ (40 - self.count) +' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
                         self.questions.html('');

@@ -13,9 +13,9 @@ $(document).ready(function(){
     stages.eq(3).data('gameName','sudoku');
     stages.one('click',openGame);
 
-    function openGame(e){
-        let el = e.target;
-        if(!$(this).data('gameName')) return;
+    function openGame(e, gn){
+        let el = gn || $(e.target).data('gameName');
+        if(!el) return;
         let isMobile = window.orientation !== undefined;
         stages.off('click');
         isMobile && fullScreen('in');
@@ -34,7 +34,7 @@ $(document).ready(function(){
             left: '5%'
         },1000, function(){
             let rules;
-            switch($(el).data('gameName')){
+            switch(el){
                 case 'puzzle':
                     rules = 'Նկարի մասերը խառը դասավորված են էկրանի վրա: ' +
                         'Հաջորդ փուլ անցնելու համար պետք է ամբողջական նկարը վերականգնել առավելագույնը 10 րոպեում:';
@@ -256,7 +256,7 @@ $(document).ready(function(){
             for (let i = 0; i < self.timeouts.length; i++){
                 clearTimeout(self.timeouts[i]);
             }
-            console.log(self.timeouts)
+            console.log(self.timeouts);
             self.timeouts = [];
             console.log(self.timeouts)
 
@@ -498,6 +498,30 @@ $(document).ready(function(){
         $('.numList').remove();
     };
 
+    window.chooseOne = function(firstStr, secondStr, firstFn, i){
+        let but = $('<div class = "again"><span id="firstBut">' + firstStr + '</span><span id="secondBut">' + secondStr + '</span></div>');
+        $('.game').append(but);
+        let promise = new Promise(function(resolve, reject){
+            but.on('click',function(ev){
+                let el = ev.target;
+                if(el.id === 'firstBut') resolve(el);
+                else if(el.id === 'secondBut') reject(el);
+            })
+
+        });
+        promise.then(function(){
+            but.off('click');
+            but.remove();
+            but = null;
+            firstFn();
+        }  , function(){
+            but.off('click');
+            but.remove();
+            but = null;
+            $('.game').fadeOut(1000, function(){$('.game').remove(); openGame(null, i)});
+        });
+    };
+
     function showRules(where,str,fn){
         let div = $('<div class="rules"><div class="ruleList">' + str + '</div></div>');
         let btn = $('<div class="start">Սկսել</div>');
@@ -509,6 +533,7 @@ $(document).ready(function(){
             fn();
         }
     }
+
 });
 
 
