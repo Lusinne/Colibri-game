@@ -16,7 +16,9 @@ $(document).ready(function(){
     function openGame(e){
         let el = e.target;
         if(!$(this).data('gameName')) return;
+        let isMobile = window.orientation !== undefined;
         stages.off('click');
+        isMobile && fullScreen('in');
         let section = $('<section class="game"></section>');
         let close = $('<button id="close">X</button>');
         let game;
@@ -36,12 +38,11 @@ $(document).ready(function(){
                 case 'puzzle':
                     rules = 'Նկարի մասերը խառը դասավորված են էկրանի վրա: ' +
                         'Հաջորդ փուլ անցնելու համար պետք է ամբողջական նկարը վերականգնել առավելագույնը 10 րոպեում:';
-                    showRules(section, rules, puzzle);
+                    showRules(section, rules, function(){game = new Puzzle();});
                     break;
                 case 'sudoku':
                     rules = 'ՈՒնենք 9×9 չափի քառակուսի, որը բաժանված է 3×3 չափի քառակուսիների։ Քառակուսին ընդհանուր ունի 81 վանդակ։ ' +
-                        'Պետք է ազատ վանդակները լրացնել 1-9 թվերվ այնպես, որ չհամընկնեն ո՛չ հորիզոնական, ո՛չ ուղղահայաց և ո՛չ էլ 3×3 չափի քառակուսու մեջ։';
-                    // showRules(section, rules, sudoku);
+                        'Պետք է ազատ վանդակները լրացնել 1-9 թվերով այնպես, որ չհամընկնեն ո՛չ հորիզոնական, ո՛չ ուղղահայաց և ո՛չ էլ 3×3 չափի քառակուսու մեջ։';
                     showRules(section, rules, function(){game = new Sudoku();});
 
                     break;
@@ -86,6 +87,7 @@ $(document).ready(function(){
                 game = null;
                 section.html('');
                 div.remove();
+                isMobile && fullScreen('out');
                 section && section.animate({
                     width: '-=80%',
                     height: '-=80vh',
@@ -105,7 +107,6 @@ $(document).ready(function(){
                         $('html').css({'overscroll-behavior-y': '', overflow: ''});
                         stages.one('click',openGame);
                         $(document).off('keyup', 'button');
-
                     })
 
                 })
@@ -115,15 +116,28 @@ $(document).ready(function(){
             });
 
         });
+
+        function fullScreen(which){
+            let doc = window.document;
+            let docEl = doc.documentElement;
+
+            let requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            let cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+
+            if(which === 'in') requestFullScreen.call(docEl);
+            else if(which === 'out') cancelFullScreen.call(doc);
+        }
     }
 
-    function puzzle(){
+    function Puzzle(){
         this.section = $('.game');
         this.bigDiv = $('<div></div>');
         this.title = $('<h2>Level 1: Puzzle</h2>');
         this.table = $('<table cellspacing="5" id="puzzle"></table>');
         this.count = 0;
         this.pieces = null;
+        this.timeouts = [];
+        this.timer = null;
         let self = this;
 
 
@@ -140,7 +154,6 @@ $(document).ready(function(){
             }
             this.section.append(this.bigDiv.append(this.title,this.table));
             self.timer = new countScore(this.bigDiv);
-            timer.go();
             self.createPieces();
         };
 
@@ -178,18 +191,20 @@ $(document).ready(function(){
 
         this.puzzleEffect = function(){
             let piece = $('.piece');
-            setTimeout(function(){
+            let a = setTimeout(function(){
                 $(self.table).addClass('tableBackground');
-                setTimeout(function(){
+                let b = setTimeout(function(){
                     $(self.table).css('background','none');
                 },3000);
-                setTimeout(function(){
+                let c = setTimeout(function(){
                     $(piece).animate({
                         backgroundSize : '100%'
                     },1000,'linear',function(){
                         $(piece).css('background-size','cover')
                     });
                 },3000);
+                self.timeouts.push(a,b,c);
+                self.timer.go();
             },5000);
 
         };
@@ -225,7 +240,7 @@ $(document).ready(function(){
                                 },
                                 duration: '5s'
                             }, 'linear');
-                            if($('#puzzle .piece').length === self.pieces.length-1){
+                            if($('#puzzle .piece').length === 20){
                                 openNextStage(1,'numberGame');
                                 showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + timer.end(), 1);
                                 clearTimeout(timeEnd);
@@ -237,16 +252,40 @@ $(document).ready(function(){
                 });
             });
         };
+        this.clearTimeouts = function(){
+            for (let i = 0; i < self.timeouts.length; i++){
+                clearTimeout(self.timeouts[i]);
+            }
+            console.log(self.timeouts)
+            self.timeouts = [];
+            console.log(self.timeouts)
+
+        };
         this.createTable();
         this.puzzleEffect();
         this.movePieces();
-
+        $(window).on('resize',function(){
+            console.log('a');
+            $('.piece').each(function(){
+                // console.log(this.offsetTop, $('.game').height())
+                let top1 = $('.game').height()
+                let left1 = $('.game').width()
+                if($(this).offsetTop + 100 > top1){ $(this).css('top', top1 - 200 + 'px')}
+                if($(this).offsetLeft + 100 > left1){ $(this).css('left',left1 - 200 + 'px')}
+                // let top1 = $(this).offset().top;
+                // let left1 = $(this).offset().left;
+                // $(this).offset().top = left1+'%';
+                // $(this).offset().left = top1+'%';
+            })
+        });
 
         let timeEnd = setTimeout(function t(){
             showAlert('Այս խաղը անցնելու համար նախատեսված ժամանակն ավարտվել է: Փորձեք նորից:');
-            timer.end();
+            self.timer.end();
+            $('.piece').off('mousedown');
+            $('.piece').off('touchstart');
             playAgainButton(function(){
-                self.section.html('');
+                self.section.children().not('button').remove();
                 self.bigDiv.html('');
                 self.table.html('');
                 self.table.removeClass('tableBackground');
@@ -254,10 +293,18 @@ $(document).ready(function(){
                 self.createTable();
                 self.puzzleEffect();
                 self.movePieces();
-                setTimeout(t,300000)
+                let restart = setTimeout(t,300000);
+                self.timeouts.push(restart);
+
             });
         },300000);
-
+        this.timeouts.push(timeEnd);
+        this.endGame = function(){
+            console.log('a');
+            console.log(self.timeouts);
+            self.clearTimeouts();
+            $(window).off('resize');
+        };
     }
 
 
@@ -371,6 +418,7 @@ $(document).ready(function(){
 
         but.focus();
     };
+
     window.openNextStage = function(num,name){
         stages.eq(num).data('gameName',name);
         stages.one('click',openGame);

@@ -531,7 +531,7 @@ window.Sudoku = function(){
 				spans[1].style.color='#000000';	
 			}
 		}
-		gameFinished=true;
+		self.gameFinished=true;
 	}
 	this.play = function(){
 		self.timer.restart();
