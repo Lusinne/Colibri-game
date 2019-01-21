@@ -50,6 +50,7 @@
         this.play();
 
         function bindEvents(){
+            self.input.on('keydown', checkNum);
             self.input.on('keyup', checkInput);
             self.input.on('focus', function(){
                 self.numList.css('display', 'none');
@@ -59,12 +60,20 @@
             })
         }
         function removeEvents(){
+            self.input.off('keydown', checkNum);
             self.input.off('keyup', checkInput);
         }
 
+        function checkNum(ev){
+            let code;
+            if (ev.keyCode) code = ev.keyCode; else if (ev.which) code = ev.which;
+            if(code>=96 && code<=105)code-=48;
+            if((code < 48 || code > 57) && code !== 8){ev.stopImmediatePropagation(); ev.preventDefault(); }
+        }
         function checkInput(){
+            let val = self.input.val();
             let alast = $('.a:last');
-            if(self.input.val() && self.input.val() === alast.text()){
+            if(val && val === alast.text()){
                 alast.remove();
                 self.count++;
                 self.points.html('Ձեր հաշիվը՝ ' + self.count);

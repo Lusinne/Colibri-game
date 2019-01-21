@@ -177,9 +177,39 @@ body{
     border: 1px solid rgba(0,0,0,0.1);
 }
 .piece{
-    position: absolute;
-    transition: transform 2s;
-	border: 1px solid black;
+	position: absolute;
+	transition: transform 2s;
+}
+.tableBackground{
+	-webkit-animation: background 3s linear;
+	-o-animation: background 3s linear;
+	animation: background 3s linear;
+}
+@keyframes background{
+	10%{
+		background-size: 90%;
+	}
+	20%{
+		background-size: 80%;
+		background-position: top left;
+	}
+	40%{
+		background-size: 60%;
+		background-position: bottom right;
+	}
+	60%{
+		background-size: 40%;
+		background-position: center;
+	}
+	80%{
+		background-size: 20%;
+		background-position: top right;
+	}
+	100%{
+		background-size: 0;
+		background-position: bottom left;
+	}
+
 }
 .higher{
 	z-index: 100;
@@ -220,11 +250,12 @@ body{
 	border-radius: 15px;
 	padding: 8px 15px;
 	border: 2px solid;
+	margin: 10px;
 }
 .again>span:hover{
 	cursor: pointer;
 	background: #fff;
-	border: #fff;
+	border-color: #fff;
 	color: rgba(7,60,118,.7);
 }
 .rules{
