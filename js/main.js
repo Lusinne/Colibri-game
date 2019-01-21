@@ -39,6 +39,7 @@ $(document).ready(function(){
                     rules = 'Նկարի մասերը խառը դասավորված են էկրանի վրա: ' +
                         'Հաջորդ փուլ անցնելու համար պետք է ամբողջական նկարը վերականգնել առավելագույնը 10 րոպեում:';
                     showRules(section, rules, function(){game = new Puzzle();});
+
                     break;
                 case 'sudoku':
                     rules = 'ՈՒնենք 9×9 չափի քառակուսի, որը բաժանված է 3×3 չափի քառակուսիների։ Քառակուսին ընդհանուր ունի 81 վանդակ։ ' +
@@ -157,7 +158,6 @@ $(document).ready(function(){
             self.createPieces();
         };
 
-
         this.createPieces = function(){
             let puzzle1 = [
                 ['puzzle/1-1.jpg','puzzle/1-2.jpg','puzzle/1-3.jpg','puzzle/1-4.jpg','puzzle/1-5.jpg','puzzle/2-1.jpg','puzzle/2-2.jpg','puzzle/2-3.jpg','puzzle/2-4.jpg','puzzle/2-5.jpg','puzzle/3-1.jpg','puzzle/3-2.jpg','puzzle/3-3.jpg','puzzle/3-4.jpg','puzzle/3-5.jpg','puzzle/4-1.jpg','puzzle/4-2.jpg','puzzle/4-3.jpg','puzzle/4-4.jpg','puzzle/4-5.jpg','puzzle/1.jpg'],
@@ -264,20 +264,6 @@ $(document).ready(function(){
         this.createTable();
         this.puzzleEffect();
         this.movePieces();
-        $(window).on('resize',function(){
-            console.log('a');
-            $('.piece').each(function(){
-                // console.log(this.offsetTop, $('.game').height())
-                let top1 = $('.game').height()
-                let left1 = $('.game').width()
-                if($(this).offsetTop + 100 > top1){ $(this).css('top', top1 - 200 + 'px')}
-                if($(this).offsetLeft + 100 > left1){ $(this).css('left',left1 - 200 + 'px')}
-                // let top1 = $(this).offset().top;
-                // let left1 = $(this).offset().left;
-                // $(this).offset().top = left1+'%';
-                // $(this).offset().left = top1+'%';
-            })
-        });
 
         let timeEnd = setTimeout(function t(){
             showAlert('Այս խաղը անցնելու համար նախատեսված ժամանակն ավարտվել է: Փորձեք նորից:');
