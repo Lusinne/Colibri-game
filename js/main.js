@@ -35,8 +35,10 @@ $(document).ready(function(){
             switch($(el).data('gameName')){
                 case 'puzzle':
                     rules = 'Նկարի կտրված մասերը խառը դասավորված են էկրանի վրա: ' +
-                        'Հաջորդ փուլ անցնելու համար պետք է ամբողջական նկարը վերականգնել առավելագույնը 10 րոպեում:';
-                    showRules(section, rules, puzzle);
+                        'Հաջորդ փուլ անցնելու համար պետք է ամբողջական նկարը վերականգնել առավելագույնը 5 րոպեում:';
+                    // showRules(section, rules, puzzle);
+                    showRules(section, rules, function(){game = new Puzzle();});
+
                     break;
                 case 'sudoku':
                     rules = 'ՈՒնենք 9×9 չափի քառակուսի, որը բաժանված է 3×3 չափի քառակուսիների։ Քառակուսին ընդհանուր ունի 81 վանդակ։ ' +
@@ -115,13 +117,15 @@ $(document).ready(function(){
         });
     }
 
-    function puzzle(){
+    function Puzzle(){
         this.section = $('.game');
         this.bigDiv = $('<div></div>');
         this.title = $('<h2>Level 1: Puzzle</h2>');
         this.table = $('<table cellspacing="5" id="puzzle"></table>');
         this.count = 0;
         this.pieces = null;
+        this.timeouts = [];
+        this.timer = null;
         let self = this;
 
 
@@ -138,7 +142,6 @@ $(document).ready(function(){
             }
             this.section.append(this.bigDiv.append(this.title,this.table));
             self.timer = new countScore(this.bigDiv);
-            timer.go();
             self.createPieces();
         };
 
@@ -176,18 +179,20 @@ $(document).ready(function(){
 
         this.puzzleEffect = function(){
             let piece = $('.piece');
-            setTimeout(function(){
+            let a = setTimeout(function(){
                 $(self.table).addClass('tableBackground');
-                setTimeout(function(){
+                let b = setTimeout(function(){
                     $(self.table).css('background','none');
                 },3000);
-                setTimeout(function(){
+                let c = setTimeout(function(){
                     $(piece).animate({
                         backgroundSize : '100%'
                     },1000,'linear',function(){
                         $(piece).css('background-size','cover')
                     });
                 },3000);
+                self.timeouts.push(a,b,c);
+                self.timer.go();
             },5000);
 
         };
@@ -235,16 +240,33 @@ $(document).ready(function(){
                 });
             });
         };
+        this.clearTimeouts = function(){
+            for (let i = 0; i < self.timeouts.length; i++){
+                clearTimeout(self.timeouts[i]);
+            }
+            console.log(self.timeouts)
+            self.timeouts = [];
+            console.log(self.timeouts)
+
+        };
         this.createTable();
         this.puzzleEffect();
         this.movePieces();
-
+        $(window).resize(function(){
+            $('.piece').each(function(){
+                let top1 = $(this).offset().top;
+                $(this).offset().top = $(this).offset().left;
+                $(this).offset().left = top1;
+            })
+        })
 
         let timeEnd = setTimeout(function t(){
             showAlert('Այս խաղը անցնելու համար նախատեսված ժամանակն ավարտվել է: Փորձեք նորից:');
-            timer.end();
+            self.timer.end();
+            $('.piece').off('mousedown');
+            $('.piece').off('touchstart');
             playAgainButton(function(){
-                self.section.html('');
+                self.section.children().not('button').remove();
                 self.bigDiv.html('');
                 self.table.html('');
                 self.table.removeClass('tableBackground');
@@ -252,10 +274,17 @@ $(document).ready(function(){
                 self.createTable();
                 self.puzzleEffect();
                 self.movePieces();
-                setTimeout(t,300000)
+                let restart = setTimeout(t,300000);
+                self.timeouts.push(restart);
+
             });
         },300000);
-
+        this.timeouts.push(timeEnd);
+        this.endGame = function(){
+            console.log('a');
+            console.log(self.timeouts);
+            self.clearTimeouts();
+        };
     }
 
 
