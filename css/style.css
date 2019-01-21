@@ -250,11 +250,12 @@ body{
 	border-radius: 15px;
 	padding: 8px 15px;
 	border: 2px solid;
+	margin: 10px;
 }
 .again>span:hover{
 	cursor: pointer;
 	background: #fff;
-	border: #fff;
+	border-color: #fff;
 	color: rgba(7,60,118,.7);
 }
 .rules{

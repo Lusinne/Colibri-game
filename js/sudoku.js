@@ -1,31 +1,34 @@
 (function(){
-window.sudoku = function(){
-	let bigDiv = $('<div></div>');
-	let sudoku = $('<div class="sudoku" id="sudoku"></div>');
-	let title = $('<h2 class="sudokuh">Level 2: Sudoku</h2>');
-	for(let i = 0, k = 0; i < 9; i++){
-        let sudokuSection = $('<div class="sudokuSection" id="sudokuSection' + i + '"></div>');
-        for(let j = 0; j < 9; j++, k++){
-            let sudokuSquare = $('<div class="sudokuSquare" id="square_' + (parseInt(j/3) + (i-i%3)) + '_' + (j%3 + (i%3)*3) + '"><span></span><span></span></div>');
-            sudokuSection.append(sudokuSquare);
-        }
-        sudoku.append(sudokuSection);
-    }
-    let bottom = $('<div id="hintDiv"><div id="hintDivInner"></div></div><div id="debug" style="position:absolute;left:30px;top:600px"></div>');
+window.Sudoku = function(){
+	let self = this;
+	this.bigDiv = $('<div></div>');
+	this.sudoku = $('<div class="sudoku" id="sudoku"></div>');
+	this.title = $('<h2 class="sudokuh">Level 2: Sudoku</h2>');
+		self.sudoku.empty();
+		for(let i = 0, k = 0; i < 9; i++){
+			let sudokuSection = $('<div class="sudokuSection" id="sudokuSection' + i + '"></div>');
+			for(let j = 0; j < 9; j++, k++){
+				let sudokuSquare = $('<div class="sudokuSquare" id="square_' + (parseInt(j/3) + (i-i%3)) + '_' + (j%3 + (i%3)*3) + '"><span></span><span></span></div>');
+				sudokuSection.append(sudokuSquare);
+			}
+			self.sudoku.append(sudokuSection);
+		}
 
-    $('.game').append(bigDiv.append(title,sudoku.append(bottom)));
-    let timer = new countScore(bigDiv);
-    timer.addClass('sudokuh');
-    timer.go();
+	// this.play();
+	this.bottom = $('<div id="hintDiv"><div id="hintDivInner"></div></div><div id="debug" style="position:absolute;left:30px;top:600px"></div>');
+    $('.game').append(this.bigDiv.append(this.title,this.sudoku.append(this.bottom)));
+    this.timer = new countScore(this.bigDiv);
+    this.timer.addClass('sudokuh');
+    this.timer.go();
     if(window.orientation !== undefined){
-        let numButton = addNumButtons($('.game'),insertNumber,insertNumber);
-        numButton.css('display','flex');
-        bigDiv.append(numButton);
+        this.numButton = addNumButtons($('.game'),insertNumber,insertNumber);
+        this.numButton.css('display','flex');
+        this.bigDiv.append(this.numButton);
     }
-	var squareObjects = [];
-    var level = 1;	
-	var countSquares = [36,36,34,32,31,30];
-	var gameFinished = false;
+	this.squareObjects = [];
+    this.level = 1;
+	this.countSquares = [36,36,34,32,31,30];
+	this.gameFinished = false;
 
 	function shuffleBoard()
 	{
@@ -39,8 +42,8 @@ window.sudoku = function(){
 			var tmpObjects1 = [];
 			var tmpObjects2 = [];
 			
-			for(var no=0;no<squareObjects.length;no++){					
-				var txtObj = squareObjects[no].getElementsByTagName('SPAN')[0];						
+			for(var no=0;no<self.squareObjects.length;no++){
+				var txtObj = self.squareObjects[no].getElementsByTagName('SPAN')[0];
 				if(txtObj.innerHTML == number1)tmpObjects1.push(txtObj);	
 				if(txtObj.innerHTML == number2)tmpObjects2.push(txtObj);
 			}
@@ -99,9 +102,9 @@ window.sudoku = function(){
 		var numberArray = [];
 		var groupCountArray = [];
 		var maxInGroup=5;
-		if(level<=0)level=1;
-		if(level==1)maxInGroup=4;
-		for(var no=0;no<countSquares[level];no++){			
+		if(self.level<=0)self.level=1;
+		if(self.level==1)maxInGroup=4;
+		for(var no=0;no < self.countSquares[self.level];no++){
 			do{
 				var row = Math.floor(Math.random()*9);
 				var col = Math.floor(Math.random()*9);
@@ -110,7 +113,7 @@ window.sudoku = function(){
 				var span = obj.getElementsByTagName('SPAN')[0];	
 				if(!numberArray[span.innerHTML])numberArray[span.innerHTML]=0;
 				if(!groupCountArray[parentID])groupCountArray[parentID]=0;
-			}while(cellsRevealed[row + '_' + col] || numberArray[span.innerHTML]>(3+Math.ceil(level/2)) || groupCountArray[parentID]>=maxInGroup);
+			}while(cellsRevealed[row + '_' + col] || numberArray[span.innerHTML]>(3+Math.ceil(self.level/2)) || groupCountArray[parentID]>=maxInGroup);
 			cellsRevealed[row + '_' + col] = true;
 			if(!numberArray[span.innerHTML])numberArray[span.innerHTML]=0;
 			numberArray[span.innerHTML]++;
@@ -135,8 +138,9 @@ window.sudoku = function(){
 	
 	function isGameFinished()
 	{
-		if(gameFinished) return;
+		if(self.gameFinished) return;
 		var obj = document.getElementById('sudoku');
+		if (!obj) return;
         let correct = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
         function checkSquare(correct) {
@@ -203,7 +207,7 @@ window.sudoku = function(){
         if (checkColumn(correct) &&
             checkRows(correct) &&
             checkSquare(correct)) {
-           		gameFinished = true;
+           		this.gameFinished = true;
 				showAlert('Շնորհավորում եմ։ Դուք հաղթահարեցիք նաև չորրորդ փուլը!!!!! <br>' + timer.end());
 				// stages.eq(2).data('gameName','numberGame');
 				// showAlert(timer.end());
@@ -212,7 +216,7 @@ window.sudoku = function(){
 	}
 	
 	function initSudoku(){
-		gameFinished = false;
+		this.gameFinished = false;
 		document.getElementById('hintDiv').style.display='none';
 		var matrix = [];
 		for(var rowCounter=0;rowCounter<9;rowCounter++){
@@ -281,14 +285,15 @@ window.sudoku = function(){
 
 				obj.onclick = highlightSquare;
 						
-				squareObjects.push(obj);						
+				self.squareObjects.push(obj);
 			}			
 		}
 		if(document.all){
-			document.body.onkeydown = insertNumber;
+			$(document.body).on('keydown', insertNumber);
 		}else{
-			document.documentElement.onkeydown = insertNumber;
+			$(document.documentElement).on('keydown', insertNumber);
 		}
+
 
 		newGame();
 		shuffleBoard();
@@ -519,16 +524,31 @@ window.sudoku = function(){
 	{
 		for(var row=0;row<9;row++){
 			for(var col=0;col<9;col++){
-				var obj =document.getElementById('square_'+row+'_'+col);
+				var obj = document.getElementById('square_'+row+'_'+col);
 				var spans = obj.getElementsByTagName('SPAN');
 				spans[0].style.display='';
 				spans[1].style.display='none';	
 				spans[1].style.color='#000000';	
 			}
 		}
-		gameFinished=true;
+		self.gameFinished=true;
 	}
-	
+	this.play = function(){
+		self.timer.restart();
+		self.timer.go();
+		newGame();
+		initSudoku();
+	};
+	this.endGame = function(){
+		if(document.all){
+			$(document.body).off('keydown', insertNumber);
+		}else{
+			$(document.documentElement).off('keydown', insertNumber);
+		}
+		this.timer.end();
+		this.gameFinished = true;
+	};
+
 	// function switchLevel(initLevel,linkObj)
 	// {
 	// 	var confirmSwitch = gameFinished;
@@ -547,4 +567,4 @@ window.sudoku = function(){
 initSudoku();
 }
 
-})()
+})();
