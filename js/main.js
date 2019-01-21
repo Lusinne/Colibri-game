@@ -252,7 +252,7 @@ $(document).ready(function(){
         this.createTable();
         this.puzzleEffect();
         this.movePieces();
-        $(window).resize(function(){
+        $(window).on('resize',function(){
             $('.piece').each(function(){
                 let top1 = $(this).offset().top;
                 $(this).offset().top = $(this).offset().left;
@@ -284,6 +284,7 @@ $(document).ready(function(){
             console.log('a');
             console.log(self.timeouts);
             self.clearTimeouts();
+            $(window).off('resize');
         };
     }
 
