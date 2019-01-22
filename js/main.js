@@ -192,7 +192,7 @@ $(document).ready(function(){
 
 
         this.puzzleEffect = function(){
-            let promise = new Promise((resolve) => {
+            let promise = new Promise(function(resolve){
                 let a = setTimeout(function(){
                     $(self.table).addClass('tableBackground');
                     let b = setTimeout(function(){
@@ -256,9 +256,11 @@ $(document).ready(function(){
                                 duration: '5s'
                             }, 'linear');
                             if($('#puzzle .piece').length === 20){
-                                openNextStage(1,'numberGame');
-                                showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + self.timer.end(), 1);
-                                clearTimeout(timeEnd);
+                                setTimeout(function(){
+                                    openNextStage(1,'numberGame');
+                                    showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + self.timer.end(), 1);
+                                    clearTimeout(timeEnd);
+                                },3000)
                             }
                             $(this).off('mousedown touchstart');
                         }
@@ -278,15 +280,15 @@ $(document).ready(function(){
         this.puzzleEffect();
         this.movePieces();
 
-        $(window).on('resize',function(){
-           self.puzzlePieces.each(function(){
+        $(window).on('resize',resizePuzzle);
+        function resizePuzzle(){
+            self.puzzlePieces.each(function(){
                 if(parseInt($(this).css('left')) > self.section.width())
                     $(this).css('left',( Math.floor(Math.random()*(parseInt(self.section.css('width'))-100))*90/screen.width) + '%');
                 if(parseInt($(this).css('top')) > self.section.height())
                     $(this).css('top',(Math.floor(Math.random()*(parseInt(self.section.css('height'))-100))*90/screen.height)+ '%');
             });
-        });
-
+        }
         let timeEnd = setTimeout(function t(){
             showAlert('Այս խաղը անցնելու համար նախատեսված ժամանակն ավարտվել է: Փորձեք նորից:');
             self.timer.end();
@@ -301,17 +303,17 @@ $(document).ready(function(){
                 self.createTable();
                 self.puzzleEffect();
                 self.movePieces();
-                let restart = setTimeout(t,300000);
+                let restart = setTimeout(t,305000);
                 self.timeouts.push(restart);
 
             });
-        },300000);
+        },305000);
         this.timeouts.push(timeEnd);
         this.endGame = function(){
             console.log('a');
             console.log(self.timeouts);
             self.clearTimeouts();
-            $(window).off('resize');
+            $(window).off('resize',resizePuzzle);
         };
     }
 
