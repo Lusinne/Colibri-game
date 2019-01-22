@@ -18,7 +18,12 @@ $(document).ready(function(){
         if(!el) return;
         let isMobile = window.orientation !== undefined;
         stages.off('click');
-        isMobile && fullScreen('in');
+        // isMobile && fullScreen('in');
+        if(isMobile){
+            fullScreen('in');
+            $(window).on('resize', toFullScreen);
+        }
+
         let section = $('<section class="game"></section>');
         let close = $('<button id="close">X</button>');
         let game;
@@ -87,7 +92,11 @@ $(document).ready(function(){
                 game = null;
                 section.html('');
                 div.remove();
-                isMobile && fullScreen('out');
+                // isMobile && fullScreen('out');
+                if(isMobile){
+                    fullScreen('out');
+                    $(window).off('resize', toFullScreen);
+                }
                 section && section.animate({
                     width: '-=80%',
                     height: '-=80vh',
@@ -126,6 +135,13 @@ $(document).ready(function(){
 
             if(which === 'in') requestFullScreen.call(docEl);
             else if(which === 'out') cancelFullScreen.call(doc);
+        }
+        function toFullScreen(){
+            if(window.innerHeight !== screen.height){
+                $(document).one('click', function(){
+                    fullScreen('in');
+                })
+            }
         }
     }
 
