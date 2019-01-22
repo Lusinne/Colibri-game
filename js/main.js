@@ -63,7 +63,7 @@ $(document).ready(function(){
         let closeButton = $('#close');
         closeButton.one('click',function  closeGame(ev){
             let full = $('<section class="promptContain"></section>');
-            let div = $('<div class="prompt"><div>Անջատե՞լ խաղը:</div></div>');
+            let div = $('<div class="prompt"><div>Դուրս գա՞լ խաղից։</div></div>');
             let answer = $('<div class="answer"><button id="Ok">Այո</button><button id="Cancel">Ոչ</button></div>');
             $(document.body).append(full.append(div.append(answer)));
             $('#Ok').focus();
@@ -138,6 +138,7 @@ $(document).ready(function(){
         this.pieces = null;
         this.timeouts = [];
         this.timer = null;
+        this.puzzlePieces = null;
         let self = this;
 
 
@@ -157,15 +158,14 @@ $(document).ready(function(){
             self.createPieces();
         };
 
-
         this.createPieces = function(){
             let puzzle1 = [
-                ['puzzle/1-1.jpg','puzzle/1-2.jpg','puzzle/1-3.jpg','puzzle/1-4.jpg','puzzle/1-5.jpg','puzzle/2-1.jpg','puzzle/2-2.jpg','puzzle/2-3.jpg','puzzle/2-4.jpg','puzzle/2-5.jpg','puzzle/3-1.jpg','puzzle/3-2.jpg','puzzle/3-3.jpg','puzzle/3-4.jpg','puzzle/3-5.jpg','puzzle/4-1.jpg','puzzle/4-2.jpg','puzzle/4-3.jpg','puzzle/4-4.jpg','puzzle/4-5.jpg','puzzle/1.jpg'],
+                ['puzzle/1-1.jpg','puzzle/1-2.jpg','puzzle/1-3.jpg','puzzle/1-4.jpg','puzzle/1-5.jpg','puzzle/2-1.jpg','puzzle/2-2.jpg','puzzle/2-3.jpg','puzzle/2-4.jpg','puzzle/2-5.jpg','puzzle/3-1.jpg','puzzle/3-2.jpg','puzzle/3-3.jpg','puzzle/3-4.jpg','puzzle/3-5.jpg','puzzle/4-1.jpg','puzzle/4-2.jpg','puzzle/4-3.jpg','puzzle/4-4.jpg','puzzle/4-5.jpg','puzzle/1.jpg']/*,
                 ['puzzle1/1-1.jpg','puzzle1/1-2.jpg','puzzle1/1-3.jpg','puzzle1/1-4.jpg','puzzle1/1-5.jpg','puzzle1/2-1.jpg','puzzle1/2-2.jpg','puzzle1/2-3.jpg','puzzle1/2-4.jpg','puzzle1/2-5.jpg','puzzle1/3-1.jpg','puzzle1/3-2.jpg','puzzle1/3-3.jpg','puzzle1/3-4.jpg','puzzle1/3-5.jpg','puzzle1/4-1.jpg','puzzle1/4-2.jpg','puzzle1/4-3.jpg','puzzle1/4-4.jpg','puzzle1/4-5.jpg'],
                 ['puzzle2/1.jpg','puzzle2/2.jpg','puzzle2/3.jpg','puzzle2/4.jpg','puzzle2/5.jpg','puzzle2/6.jpg','puzzle2/7.jpg','puzzle2/8.jpg','puzzle2/9.jpg','puzzle2/10.jpg','puzzle2/11.jpg','puzzle2/12.jpg','puzzle2/13.jpg','puzzle2/14.jpg','puzzle2/15.jpg','puzzle2/16.jpg','puzzle2/17.jpg','puzzle2/18.jpg','puzzle2/19.jpg','puzzle2/20.jpg'],
                 ['puzzle3/1.jpg','puzzle3/2.jpg','puzzle3/3.jpg','puzzle3/4.jpg','puzzle3/5.jpg','puzzle3/6.jpg','puzzle3/7.jpg','puzzle3/8.jpg','puzzle3/9.jpg','puzzle3/10.jpg','puzzle3/11.jpg','puzzle3/12.jpg','puzzle3/13.jpg','puzzle3/14.jpg','puzzle3/15.jpg','puzzle3/16.jpg','puzzle3/17.jpg','puzzle3/18.jpg','puzzle3/19.jpg','puzzle3/20.jpg'],
                 ['puzzle4/1.jpg','puzzle4/2.jpg','puzzle4/3.jpg','puzzle4/4.jpg','puzzle4/5.jpg','puzzle4/6.jpg','puzzle4/7.jpg','puzzle4/8.jpg','puzzle4/9.jpg','puzzle4/10.jpg','puzzle4/11.jpg','puzzle4/12.jpg','puzzle4/13.jpg','puzzle4/14.jpg','puzzle4/15.jpg','puzzle4/16.jpg','puzzle4/17.jpg','puzzle4/18.jpg','puzzle4/19.jpg','puzzle4/20.jpg'],
-                ['puzzle5/1.jpg','puzzle5/2.jpg','puzzle5/3.jpg','puzzle5/4.jpg','puzzle5/5.jpg','puzzle5/6.jpg','puzzle5/7.jpg','puzzle5/8.jpg','puzzle5/9.jpg','puzzle5/10.jpg','puzzle5/11.jpg','puzzle5/12.jpg','puzzle5/13.jpg','puzzle5/14.jpg','puzzle5/15.jpg','puzzle5/16.jpg','puzzle5/17.jpg','puzzle5/18.jpg','puzzle5/19.jpg','puzzle5/20.jpg']
+                ['puzzle5/1.jpg','puzzle5/2.jpg','puzzle5/3.jpg','puzzle5/4.jpg','puzzle5/5.jpg','puzzle5/6.jpg','puzzle5/7.jpg','puzzle5/8.jpg','puzzle5/9.jpg','puzzle5/10.jpg','puzzle5/11.jpg','puzzle5/12.jpg','puzzle5/13.jpg','puzzle5/14.jpg','puzzle5/15.jpg','puzzle5/16.jpg','puzzle5/17.jpg','puzzle5/18.jpg','puzzle5/19.jpg','puzzle5/20.jpg']*/
             ];
             this.pieces = puzzle1[Math.floor(Math.random()*puzzle1.length)];
             this.table.css({
@@ -185,32 +185,46 @@ $(document).ready(function(){
                 $(piece).data('num',i);
                 this.section.append(piece)
             }
+            self.puzzlePieces = $('.piece');
         };
 
 
 
         this.puzzleEffect = function(){
-            let piece = $('.piece');
-            let a = setTimeout(function(){
-                $(self.table).addClass('tableBackground');
-                let b = setTimeout(function(){
-                    $(self.table).css('background','none');
-                },3000);
-                let c = setTimeout(function(){
-                    $(piece).animate({
-                        backgroundSize : '100%'
-                    },1000,'linear',function(){
-                        $(piece).css('background-size','cover')
-                    });
-                },3000);
-                self.timeouts.push(a,b,c);
-                self.timer.go();
-            },5000);
+            let promise = new Promise((resolve) => {
+                let a = setTimeout(function(){
+                    $(self.table).addClass('tableBackground');
+                    let b = setTimeout(function(){
+                        $(self.table).css('background','none');
 
+
+                        resolve(function(){
+                            self.timeouts.push(a,b);
+                            self.timer.go();
+                            self.puzzlePieces.ready(function(){
+                                self.puzzlePieces.animate({
+                                    backgroundSize : '100%'
+                                },1000,'linear',function(){
+                                    self.puzzlePieces.css('background-size','cover')
+                                });
+                            });
+                        });
+
+
+                    },2950);
+                },5000);
+
+            });
+            promise
+                .then(
+                    function(result){
+                        result();
+                    }
+                );
         };
 
         this.movePieces = function(){
-            $('.piece').on('mousedown touchstart',function(e){
+            self.puzzlePieces.on('mousedown touchstart',function(e){
                 let top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
                 let thisPiece = $(this);
                 thisPiece.addClass('higher');
@@ -242,7 +256,7 @@ $(document).ready(function(){
                             }, 'linear');
                             if($('#puzzle .piece').length === 20){
                                 openNextStage(1,'numberGame');
-                                showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + timer.end(), 1);
+                                showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + self.timer.end(), 1);
                                 clearTimeout(timeEnd);
                             }
                             $(this).off('mousedown touchstart');
@@ -256,34 +270,27 @@ $(document).ready(function(){
             for (let i = 0; i < self.timeouts.length; i++){
                 clearTimeout(self.timeouts[i]);
             }
-            console.log(self.timeouts);
             self.timeouts = [];
-            console.log(self.timeouts)
 
         };
         this.createTable();
         this.puzzleEffect();
         this.movePieces();
+
         $(window).on('resize',function(){
-            console.log('a');
-            $('.piece').each(function(){
-                // console.log(this.offsetTop, $('.game').height())
-                let top1 = $('.game').height()
-                let left1 = $('.game').width()
-                if($(this).offsetTop + 100 > top1){ $(this).css('top', top1 - 200 + 'px')}
-                if($(this).offsetLeft + 100 > left1){ $(this).css('left',left1 - 200 + 'px')}
-                // let top1 = $(this).offset().top;
-                // let left1 = $(this).offset().left;
-                // $(this).offset().top = left1+'%';
-                // $(this).offset().left = top1+'%';
-            })
+            self.puzzlePieces.each(function(){
+                if(parseInt($(this).css('left')) > self.section.width())
+                    $(this).css('left',( Math.floor(Math.random()*(parseInt(self.section.css('width'))-100))*90/screen.width) + '%');
+                if(parseInt($(this).css('top')) > self.section.height())
+                    $(this).css('top',(Math.floor(Math.random()*(parseInt(self.section.css('height'))-100))*90/screen.height)+ '%');
+            });
         });
 
         let timeEnd = setTimeout(function t(){
             showAlert('Այս խաղը անցնելու համար նախատեսված ժամանակն ավարտվել է: Փորձեք նորից:');
             self.timer.end();
-            $('.piece').off('mousedown');
-            $('.piece').off('touchstart');
+            self.puzzlePieces.off('mousedown');
+            self.puzzlePieces.off('touchstart');
             playAgainButton(function(){
                 self.section.children().not('button').remove();
                 self.bigDiv.html('');
@@ -308,13 +315,12 @@ $(document).ready(function(){
     }
 
 
-
     function Ballons(){
         let section = $('.game');
         let bigDiv = $('<div id="ballonBox"></div>');
         let game = $('<div id="ballonGame"></div>');
         let score = $('<div><h2>Ձեր հաշիվը՝ 0</h2></div>');
-        let title = $('<h2>Level 4: Ballons</h2>');
+        let title = $('<h2>Level 3: Ballons</h2>');
         this.o = 0;
         this.balls = [];
         let speed = 10000;
@@ -348,19 +354,28 @@ $(document).ready(function(){
                 }
                 if(self.o >= 100){
                     openNextStage(3,'sudoku');
-                    showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br>  Դուք հավաքել եք ' + self.o + ' միավոր', 3);
+                    showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br>  Դուք հավաքել եք ' + self.o + ' միավոր');
+                    chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'sudoku' );
                 }else if($('.game').length){
                     showAlert('Ձեզ պակասում է ' + (100 - self.o) + ' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
-                    playAgainButton(function(){
-                        section.append(bigDiv.append(title,game,score));
-                        self.start = setInterval(addBallons,speedBalloon);
-                        score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
-                    });
+
+                    if(stages.eq(3).data('gameName')){
+                        chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'sudoku' );
+                    }else{
+                        playAgainButton(function(){
+                            self.play();
+                        })
+                    }
                 }
                 self.endGame();
             });
             bal.on('dragstart', function(e){e.preventDefault()})
         }
+        this.play = function(){
+            section.append(bigDiv.append(title,game,score));
+            self.start = setInterval(addBallons,speedBalloon);
+            score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
+        };
         this.endGame = function(){
             self.o = 0;
             speed = 10000;
@@ -450,6 +465,7 @@ $(document).ready(function(){
                 }
 
             },1000);
+           watch.empty();
             watch.append(hours, ' : ', minutes, ' : ', seconds);
             $(where).append(watch);
         };

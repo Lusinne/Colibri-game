@@ -3,7 +3,7 @@
         this.section = $('.game');
         this.bigDiv = $('<div id="miniSection"></div>');
         this.points = $('<h2 id="points">Ձեր հաշիվը՝ 0</h2>');
-        this.title = $('<h2>Level 3: Number Game</h2>');
+        this.title = $('<h2>Level 2: Number Game</h2>');
         this.big = $('<div id="big"></div>');
         this.questions = $('<div id="questions"></div>');
         this.input = $('<input id="input" type="text" placeholder="Նշեք ճիշտ պատասխանը">');
@@ -89,7 +89,7 @@
         }
 
         function create(randomMultiple){
-            let div = $('<div class="a" style="position:relative;">' + Math.floor(Math.random() * randomMultiple) + '</div>');
+            let div = $('<div class="a" style="position:relative;">' + Math.ceil(Math.random() * randomMultiple) + '</div>');
             div.animate({
                 paddingTop: '+=15px',
                 paddingBottom: '+=15px',
@@ -110,17 +110,20 @@
                 if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= self.input.position().top){
                     self.endGame();
 
-                    if(self.count >= 2){
+                    if(self.count >= 40){
                         openNextStage(2,'ballons');
                         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր');
                         chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );
                     }else{
                         showAlert('Ձեզ պակասում է '+ (40 - self.count) +' միավոր հաջորդ փուլ անցնելու համար: Փորձեք նորից:');
                         self.questions.html('');
-
-                        playAgainButton(function(){
-                            self.play();
-                        })
+                        if(stages.eq(2).data('gameName')){
+                            chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );
+                        }else{
+                            playAgainButton(function(){
+                                self.play();
+                            })
+                        }
                     }
                 }
             },150))

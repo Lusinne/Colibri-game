@@ -3,8 +3,7 @@ window.Sudoku = function(){
 	let self = this;
 	this.bigDiv = $('<div></div>');
 	this.sudoku = $('<div class="sudoku" id="sudoku"></div>');
-	this.title = $('<h2 class="sudokuh">Level 2: Sudoku</h2>');
-		self.sudoku.empty();
+	this.title = $('<h2 class="sudokuh">Level 4: Sudoku</h2>');
 		for(let i = 0, k = 0; i < 9; i++){
 			let sudokuSection = $('<div class="sudokuSection" id="sudokuSection' + i + '"></div>');
 			for(let j = 0; j < 9; j++, k++){
@@ -127,7 +126,7 @@ window.Sudoku = function(){
         document.getElementById('hintDiv').style.display='none';
         if(!inputObj)inputObj = this;
         if(inputObj.style.backgroundColor)return;
-        if(gameFinished)return;
+        if(this.gameFinished)return;
 		inputObj.className='sudokuSquareHighlighted';
 		if(higlightedCell && higlightedCell!=inputObj)higlightedCell.className='sudokuSquare';
 		higlightedCell = inputObj;
@@ -207,16 +206,19 @@ window.Sudoku = function(){
         if (checkColumn(correct) &&
             checkRows(correct) &&
             checkSquare(correct)) {
-           		this.gameFinished = true;
+           		self.gameFinished = true;
 				showAlert('Շնորհավորում եմ։ Դուք հաղթահարեցիք նաև չորրորդ փուլը!!!!! <br>' + timer.end());
-				// stages.eq(2).data('gameName','numberGame');
+				self.endGame();
+            	playAgainButton(self.play);
+
+            // stages.eq(2).data('gameName','numberGame');
 				// showAlert(timer.end());
         }
 
 	}
 	
 	function initSudoku(){
-		this.gameFinished = false;
+		self.gameFinished = false;
 		document.getElementById('hintDiv').style.display='none';
 		var matrix = [];
 		for(var rowCounter=0;rowCounter<9;rowCounter++){
@@ -304,7 +306,7 @@ window.Sudoku = function(){
 
 		if(document.all)e = event;
 		if(!higlightedCell)return;
-		if(gameFinished)return;
+		if(self.gameFinished)return;
 		if (e.keyCode) code = e.keyCode; else if (e.which) code = e.which;
 		var span = higlightedCell.getElementsByTagName('SPAN')[1];
 		
@@ -536,6 +538,7 @@ window.Sudoku = function(){
 	this.play = function(){
 		self.timer.restart();
 		self.timer.go();
+		self.sudoku.css('visibility', 'visible');
 		newGame();
 		initSudoku();
 	};
@@ -547,6 +550,7 @@ window.Sudoku = function(){
 		}
 		this.timer.end();
 		this.gameFinished = true;
+		self.sudoku.css('visibility', 'hidden');
 	};
 
 	// function switchLevel(initLevel,linkObj)
@@ -562,9 +566,11 @@ window.Sudoku = function(){
 	// 		linkObj.style.fontWeight = 'bold';
 	// 		level = initLevel;
 	// 		setTimeout('initSudoku()',20);
-	// 	}
 	// }
 initSudoku();
-}
 
+
+    // 	}
+
+};
 })();
