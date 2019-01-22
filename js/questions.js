@@ -3,7 +3,7 @@
         this.section = $('.game');
         this.bigDiv = $('<div id="miniSection"></div>');
         this.points = $('<h2 id="points">Ձեր հաշիվը՝ 0</h2>');
-        this.title = $('<h2>Level 3: Number Game</h2>');
+        this.title = $('<h2>Level 2: Number Game</h2>');
         this.big = $('<div id="big"></div>');
         this.questions = $('<div id="questions"></div>');
         this.input = $('<input id="input" type="text" placeholder="Նշեք ճիշտ պատասխանը">');
