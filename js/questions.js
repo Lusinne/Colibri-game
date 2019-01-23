@@ -76,7 +76,6 @@
             if(val && val === alast.text()){
                 alast.remove();
                 self.count++;
-                self.points.html('Ձեր հաշիվը՝ ' + self.count);
                 if(self.count % 10 === 0){
                     clearInterval(self.int);
                     self.randomMultiple *= 10;
@@ -84,6 +83,7 @@
                     self.count++;
                     self.int = setInterval(create, self.t, self.randomMultiple)
                 }
+                self.points.html('Ձեր հաշիվը՝ ' + self.count);
                 self.input.val('');
             }
         }
@@ -110,7 +110,7 @@
                 if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= self.input.position().top){
                     self.endGame();
 
-                    if(self.count >= 40){
+                    if(self.count >= 2){
                         openNextStage(2,'ballons');
                         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր');
                         chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );

@@ -22,6 +22,7 @@
 	overscroll-behavior-y: contain;
 	overflow: hidden;
 }*/
+
 body{
 	height: 100vh;
 	width: 100%;
@@ -164,7 +165,9 @@ body{
 	border-color: #E7E9E7;
 	cursor: pointer;
 }
-
+.gameBonus{
+	font-size: 0.7em;
+}
 #puzzle{
     position: relative;
     background: rgba(255,255,255,0.4);
@@ -323,6 +326,9 @@ body{
 	.game h2{
 		font-size: .9em;
 	}
+	.gameLevel{
+		font-size: 0.8em;
+	}
 	.ruleList{
 		width: 400px;
 	}
@@ -345,6 +351,9 @@ body{
 	}
 	.ruleList,.start,.rules{
 		font-size: 13pt !important;
+	}
+	#firstBut, #secondBut{
+		display: block;
 	}
 }
 @media (max-width: 767px) {
