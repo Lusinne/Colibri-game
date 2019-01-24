@@ -6,9 +6,15 @@
         this.title = $('<h2>Level 2: Number Game</h2>');
         this.big = $('<div id="big"></div>');
         this.questions = $('<div id="questions"></div>');
+        this.questions.css({height: window.innerHeight - 50 + 'px'});
         this.input = $('<input id="input" type="text" placeholder="Նշեք ճիշտ պատասխանը">');
-        this.section.append(this.bigDiv.append(this.title,this.big.append(this.questions, this.input),this.points));
-        let self = this;
+        this.bigDiv[0].appendChild(this.title[0]);
+        this.big[0].appendChild(this.questions[0]);
+        this.big[0].appendChild(this.input[0]);
+        this.bigDiv[0].appendChild(this.big[0]);
+        this.bigDiv[0].appendChild(this.points[0]);
+        this.section[0].appendChild(this.bigDiv[0]);
+        var self = this;
         this.numList = addNumButtons(self.bigDiv,function(){
             self.input[0].value += this.innerText;
             checkInput();
@@ -33,10 +39,11 @@
         };
 
         this.endGame = function(){
+            console.log('dsfmk')
             removeEvents();
             // removeNumButtons();
             clearInterval(self.int);
-            let a = $('.a');
+            var a = $('.a');
             a.stop(true,false);
             a.remove();
             self.input.prop('disabled', true);
@@ -65,18 +72,17 @@
         }
 
         function checkNum(ev){
-            let code;
+            var code;
             if (ev.keyCode) code = ev.keyCode; else if (ev.which) code = ev.which;
             if(code>=96 && code<=105)code-=48;
             if((code < 48 || code > 57) && code !== 8){ev.stopImmediatePropagation(); ev.preventDefault(); }
         }
         function checkInput(){
-            let val = self.input.val();
-            let alast = $('.a:last');
+            var val = self.input.val();
+            var alast = $('.a:last');
             if(val && val === alast.text()){
                 alast.remove();
                 self.count++;
-                self.points.html('Ձեր հաշիվը՝ ' + self.count);
                 if(self.count % 10 === 0){
                     clearInterval(self.int);
                     self.randomMultiple *= 10;
@@ -84,12 +90,13 @@
                     self.count++;
                     self.int = setInterval(create, self.t, self.randomMultiple)
                 }
+                self.points.html('Ձեր հաշիվը՝ ' + self.count);
                 self.input.val('');
             }
         }
 
         function create(randomMultiple){
-            let div = $('<div class="a" style="position:relative;">' + Math.ceil(Math.random() * randomMultiple) + '</div>');
+            var div = $('<div class="a" style="position:relative;">' + Math.ceil(Math.random() * randomMultiple) + '</div>');
             div.animate({
                 paddingTop: '+=15px',
                 paddingBottom: '+=15px',
@@ -99,18 +106,19 @@
                 borderWidth: '+=1px'
             },1500,function () {
                 div.animate({
-                    top: '+=90vh'
+                    top: '+=90%'
                 }, 25000, 'linear');
             });
 
-            self.questions.prepend(div);
+            self.questions[0].insertBefore(div[0],self.questions[0].children[0]);
 
             self.set.push(setInterval(function(){
-                let divs = $('.a:last');
+                var divs = $('.a:last');
+                console.log(divs.position().top + parseInt(divs.css('height'))*1.3, self.input.position().top)
                 if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= self.input.position().top){
                     self.endGame();
 
-                    if(self.count >= 40){
+                    if(self.count >= 2){
                         openNextStage(2,'ballons');
                         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր');
                         chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );
@@ -126,7 +134,7 @@
                         }
                     }
                 }
-            },150))
+            },800))
 
         }
     };

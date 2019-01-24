@@ -22,6 +22,7 @@
 	overscroll-behavior-y: contain;
 	overflow: hidden;
 }*/
+
 body{
 	height: 100vh;
 	width: 100%;
@@ -73,8 +74,14 @@ body{
 	position: absolute;
 	top: 50%;
 	left: 50%;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
 	display: flex;
+	-webkit-box-pack: center;
 	justify-content: center;
+	-webkit-box-align: center;
 	align-items: center;
 	-webkit-box-shadow: 2px 2px 30px -3px rgba(165,186,194,1);
 	-moz-box-shadow: 2px 2px 30px -3px rgba(165,186,194,1);
@@ -118,9 +125,10 @@ body{
 	z-index: 99998;
 }
 .prompt{
-	position: fixed;
-	top: 0;
-	left: calc(50% - 250px);
+	/*position: fixed;*/
+	/*top: 0;*/
+	margin: 0 auto;
+	/*left: calc(50% - 250px);*/
 	width: 500px;
 	min-height: 200px;
 	background: rgb(7,60,118);
@@ -137,8 +145,10 @@ body{
 	-webkit-flex-direction: column;
 	-moz-flex-direction: column;
 	flex-direction: column;
+	-webkit-box-orient: vertical;
 	-webkit-justify-content: space-between;
 	justify-content: space-between;
+	-webkit-box-pack: justify;
 	padding: 2%;
 	z-index: 99999;
 }
@@ -164,7 +174,9 @@ body{
 	border-color: #E7E9E7;
 	cursor: pointer;
 }
-
+.gameBonus{
+	font-size: 0.7em;
+}
 #puzzle{
     position: relative;
     background: rgba(255,255,255,0.4);
@@ -218,11 +230,11 @@ body{
 	width: 70%;
 }
 #ballonGame{
-	height: 70vh;
+	/*height: 70%;*/
 	width: 100%;
 	position: relative;
 	overflow: hidden;
-	cursor:url('../images/ballon_game/needle-32.png'),auto;
+	cursor: url('../images/ballon_game/needle-32.png'),auto;
 	background-color: rgba(255, 255, 255,.3);
 }
 #ballonGame>div{
@@ -268,14 +280,26 @@ body{
 	background-size: cover;
 	font-size: 1.5em;
 	text-align: center;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
 	display: flex;
+	-webkit-flex-direction: column;
+	-moz-flex-direction: column;
+	-webkit-box-orient: vertical;
 	flex-direction: column;
 	align-items: center;
-	justify-content: space-around;
+	-webkit-box-align: center;
+	justify-content: center;
+	-webkit-box-pack: center;
 	color: #fff;
 	overflow-y: auto;
 	padding: 30px 0 10px;
 	border-radius: 20px;
+}
+.rules>div{
+	margin: 3% 0;
 }
 .ruleList{
 	width: 800px;
@@ -323,6 +347,9 @@ body{
 	.game h2{
 		font-size: .9em;
 	}
+	.gameLevel{
+		font-size: 0.8em;
+	}
 	.ruleList{
 		width: 400px;
 	}
@@ -345,6 +372,9 @@ body{
 	}
 	.ruleList,.start,.rules{
 		font-size: 13pt !important;
+	}
+	#firstBut, #secondBut{
+		display: block;
 	}
 }
 @media (max-width: 767px) {

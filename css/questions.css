@@ -1,12 +1,21 @@
 #big{
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
 	display: flex;
+	-webkit-flex-direction: column;
+	-moz-flex-direction: column;
 	flex-direction: column;
+	-webkit-box-orient: vertical;
 	justify-content: space-between;
+	-webkit-box-pack: justify;
+	-webkit-box-align: center;
 	align-items: center;
 	height: 100%;
 }
 #questions{
-	height: calc(100vh - 50px);
+	/*height: calc(100vh - 50px);*/
 	overflow: hidden;
 }
 #miniSection input{

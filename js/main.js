@@ -1,4 +1,13 @@
 $(document).ready(function(){
+    // $(img)
+    function setSizes(){
+        $('.container').css({
+            'height': window.innerHeight + 'px',
+            'width': window.innerWidth + 'px'
+        });
+    }
+    setSizes();
+    $(window).on('resize', setSizes);
     $(window).on('keydown', function(ev){
         (ev.which === 123 || (ev.ctrlKey && (ev.which === 85 || ev.which === 83 || ev.which === 73 && ev.shiftKey))) && ev.preventDefault();
     });
@@ -14,9 +23,9 @@ $(document).ready(function(){
     stages.one('click',openGame);
 
     function openGame(e, gn){
-        let el = gn || $(e.target).data('gameName');
+        var el = gn || $(e.target).data('gameName');
         if(!el) return;
-        let isMobile = window.orientation !== undefined;
+        var isMobile = window.orientation !== undefined;
         stages.off('click');
         // isMobile && fullScreen('in');
         if(isMobile){
@@ -24,21 +33,21 @@ $(document).ready(function(){
             $(window).on('resize', toFullScreen);
         }
 
-        let section = $('<section class="game"></section>');
-        let close = $('<button id="close">X</button>');
-        let game;
-        section.append(close);
-        $(document.body).append(section);
+        var section = $('<section class="game"></section>');
+        var close = $('<button id="close">X</button>');
+        var game;
+        section[0].appendChild(close[0]);
+        document.body.appendChild(section[0]);
         $('body').css({'overscroll-behavior-y': 'contain', overflow: 'hidden'});
         $('html').css({'overscroll-behavior-y': 'contain', overflow: 'hidden'});
         section.animate({
             display: 'block',
             width: '+=90%',
-            height: '+=90vh',
+            height: '+=90%',
             top: '4%',
             left: '5%'
         },1000, function(){
-            let rules;
+            var rules;
             switch(el){
                 case 'puzzle':
                     rules = 'Նկարի մասերը խառը դասավորված են էկրանի վրա: ' +
@@ -65,21 +74,23 @@ $(document).ready(function(){
             }
         });
 
-        let closeButton = $('#close');
+        var closeButton = $('#close');
         closeButton.one('click',function  closeGame(ev){
-            let full = $('<section class="promptContain"></section>');
-            let div = $('<div class="prompt"><div>Դուրս գա՞լ խաղից։</div></div>');
-            let answer = $('<div class="answer"><button id="Ok">Այո</button><button id="Cancel">Ոչ</button></div>');
-            $(document.body).append(full.append(div.append(answer)));
+            var full = $('<section class="promptContain"></section>');
+            var div = $('<div class="prompt"><div>Դուրս գա՞լ խաղից։</div></div>');
+            var answer = $('<div class="answer"><button id="Ok">Այո</button><button id="Cancel">Ոչ</button></div>');
+            div[0].appendChild(answer[0])
+            full[0].appendChild(div[0]);
+            document.body.appendChild(full[0]);
             $('#Ok').focus();
             $(document).on('keyup', 'button', function(ev){
-                ev.which === 37 && $('#Ok').focus(); 
-                ev.which === 39 && $('#Cancel').focus(); 
+                ev.which === 37 && $('#Ok').focus();
+                ev.which === 39 && $('#Cancel').focus();
             });
 
-            let promise = new Promise(function(resolve, reject){
+            var promise = new Promise(function(resolve, reject){
                 div.on('click',function(ev){
-                    let el = ev.target;
+                    var el = ev.target;
                     $(document).stop();
                     if(el.getAttribute('id') === 'Ok') resolve(el);
                     else if(el.getAttribute('id') === 'Cancel') reject(el);
@@ -99,15 +110,15 @@ $(document).ready(function(){
                 }
                 section && section.animate({
                     width: '-=80%',
-                    height: '-=80vh',
+                    height: '-=80%',
                     top: '50%',
                     left: '50%'
                 },1000,function(){
                     section.animate({
-                        top: '0',
+                        top: '-=50%',
                         left: '100%',
                         width: '-=10%',
-                        height: '-=10vh',
+                        height: '-=10%',
                     }, 1000 , function(){
                         section.remove();
                         full.remove();
@@ -127,11 +138,11 @@ $(document).ready(function(){
         });
 
         function fullScreen(which){
-            let doc = window.document;
-            let docEl = doc.documentElement;
+            var doc = window.document;
+            var docEl = doc.documentElement;
 
-            let requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-            let cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
+            var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
 
             if(which === 'in') requestFullScreen.call(docEl);
             else if(which === 'out') cancelFullScreen.call(doc);
@@ -155,27 +166,30 @@ $(document).ready(function(){
         this.timeouts = [];
         this.timer = null;
         this.puzzlePieces = null;
-        let self = this;
+        var self = this;
 
 
         this.createTable = function(){
-            for (let i = 0; i < 4; i++) {
-                let tr = $('<tr></tr>');
-                for (let j = 0; j < 5; j++) {
-                    let td = $('<td></td>');
+            for (var i = 0; i < 4; i++) {
+                var tr = $('<tr></tr>');
+                for (var j = 0; j < 5; j++) {
+                    var td = $('<td></td>');
                     $(td).data('num',this.count);
                     this.count++;
-                    tr.append(td);
+                    tr[0].appendChild(td[0]);
                 }
-                this.table.append(tr)
+                this.table[0].appendChild(tr[0])
             }
-            this.section.append(this.bigDiv.append(this.title,this.table));
+            this.count = 0;
+            this.bigDiv[0].appendChild(this.title[0]);
+            this.bigDiv[0].appendChild(this.table[0]);
+            this.section[0].appendChild(this.bigDiv[0]);
             self.timer = new countScore(this.bigDiv);
             self.createPieces();
         };
 
         this.createPieces = function(){
-            let puzzle1 = [
+            var puzzle1 = [
                 ['puzzle/1-1.jpg','puzzle/1-2.jpg','puzzle/1-3.jpg','puzzle/1-4.jpg','puzzle/1-5.jpg','puzzle/2-1.jpg','puzzle/2-2.jpg','puzzle/2-3.jpg','puzzle/2-4.jpg','puzzle/2-5.jpg','puzzle/3-1.jpg','puzzle/3-2.jpg','puzzle/3-3.jpg','puzzle/3-4.jpg','puzzle/3-5.jpg','puzzle/4-1.jpg','puzzle/4-2.jpg','puzzle/4-3.jpg','puzzle/4-4.jpg','puzzle/4-5.jpg','puzzle/1.jpg']/*,
                 ['puzzle1/1-1.jpg','puzzle1/1-2.jpg','puzzle1/1-3.jpg','puzzle1/1-4.jpg','puzzle1/1-5.jpg','puzzle1/2-1.jpg','puzzle1/2-2.jpg','puzzle1/2-3.jpg','puzzle1/2-4.jpg','puzzle1/2-5.jpg','puzzle1/3-1.jpg','puzzle1/3-2.jpg','puzzle1/3-3.jpg','puzzle1/3-4.jpg','puzzle1/3-5.jpg','puzzle1/4-1.jpg','puzzle1/4-2.jpg','puzzle1/4-3.jpg','puzzle1/4-4.jpg','puzzle1/4-5.jpg'],
                 ['puzzle2/1.jpg','puzzle2/2.jpg','puzzle2/3.jpg','puzzle2/4.jpg','puzzle2/5.jpg','puzzle2/6.jpg','puzzle2/7.jpg','puzzle2/8.jpg','puzzle2/9.jpg','puzzle2/10.jpg','puzzle2/11.jpg','puzzle2/12.jpg','puzzle2/13.jpg','puzzle2/14.jpg','puzzle2/15.jpg','puzzle2/16.jpg','puzzle2/17.jpg','puzzle2/18.jpg','puzzle2/19.jpg','puzzle2/20.jpg'],
@@ -188,8 +202,8 @@ $(document).ready(function(){
                 'background': 'url(images/'+ this.pieces[this.pieces.length-1]+') no-repeat center',
                 'background-size' : '100% 100%'
             });
-            for (let i = 0; i < this.pieces.length-1; i++) {
-                let piece = $('<div class="piece"></div>');
+            for (var i = 0; i < this.pieces.length-1; i++) {
+                var piece = $('<div class="piece"></div>');
                 $(piece).data('pieceNo',i);
                 $(piece).css({
                     'top': (Math.floor(Math.random()*(parseInt(this.section.css('height'))-100))*90/screen.height)+ '%',
@@ -199,7 +213,7 @@ $(document).ready(function(){
                     'transform': 'rotate(' +Math.floor(Math.random()*180) + 'deg)'
                 });
                 $(piece).data('num',i);
-                this.section.append(piece)
+                this.section[0].appendChild(piece[0])
             }
             self.puzzlePieces = $('.piece');
         };
@@ -207,17 +221,18 @@ $(document).ready(function(){
 
 
         this.puzzleEffect = function(){
-            let promise = new Promise(function(resolve){
-                let a = setTimeout(function(){
+            var promise = new Promise(function(resolve,reject){
+                var a = setTimeout(function(){
                     $(self.table).addClass('tableBackground');
-                    let b = setTimeout(function(){
+                    var b = setTimeout(function(){
                         $(self.table).css('background','none');
 
 
-                        resolve(function(){
-                            self.timeouts.push(a,b);
-                            self.timer.go();
-                            self.puzzlePieces.ready(function(){
+                         resolve(function(){
+                             self.timeouts.push(a,b);
+                             console.log('dsfk')
+                             self.timer.go();
+                             self.puzzlePieces.ready(function(){
                                 self.puzzlePieces.animate({
                                     backgroundSize : '100%'
                                 },1000,'linear',function(){
@@ -235,35 +250,34 @@ $(document).ready(function(){
                 .then(
                     function(result){
                         result();
-                    }
+                    },function(a){console.log(a)}
                 );
         };
 
         this.movePieces = function(){
             self.puzzlePieces.on('mousedown touchstart',function(e){
-                let top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
-                let thisPiece = $(this);
+                var top = e.pageY - parseInt($(this).css('top')) || e.touches[0].clientY - parseInt($(this).css('top'));
+                var thisPiece = $(this);
                 thisPiece.addClass('higher');
-                let left = e.pageX - parseInt($(this).css('left')) || e.touches[0].clientX - parseInt($(this).css('left'));
+                var left = e.pageX - parseInt($(this).css('left')) || e.touches[0].clientX - parseInt($(this).css('left'));
                 $(document).on('mousemove touchmove',function(ev){
-                    let t = ev.pageY || ev.touches[0].clientY;
-                    let l = ev.pageX || ev.touches[0].clientX;
+                    var t = ev.pageY || ev.touches[0].clientY;
+                    var l = ev.pageX || ev.touches[0].clientX;
                     thisPiece.css('top',t - top + 'px');
                     thisPiece.css('left',l - left + 'px');
                 });
                 $(this).one('mouseup touchend',function(el){
                     thisPiece.removeClass('higher');
-                    let td = $('td');
-                    let cx = el.pageX || el.changedTouches[0].clientX;
-                    let cy = el.pageY || el.changedTouches[0].clientY;
-                    for (let i = 0; i < td.length; i++){
+                    var td = $('td');
+                    var cx = el.pageX || el.changedTouches[0].clientX;
+                    var cy = el.pageY || el.changedTouches[0].clientY;
+                    for (var i = 0; i < td.length; i++){
                         if(td.eq(i).data('num') === $(this).data('num') && (cy < td.eq(i).offset().top + parseInt(td.eq(i).css('height')) && (cy > td.eq(i).offset().top)) && (cx < td.eq(i).offset().left + parseInt(td.eq(i).css('width')) && (cx > td.eq(i).offset().left))){
-
                             $(this).css({
                                 'top': 0,
                                 'left': 0
                             });
-                            td.eq(i).append($(this));
+                            td[i].appendChild(this);
                             $(this).animate({  textIndent: 0}, {
                                 step: function(now, fx) {
                                     $(this).css('transform','rotate(' + now + 'deg)');
@@ -273,9 +287,27 @@ $(document).ready(function(){
                             if($('#puzzle .piece').length === 20){
                                 setTimeout(function(){
                                     openNextStage(1,'numberGame');
-                                    showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + self.timer.end(), 1);
-                                    clearTimeout(timeEnd);
+                                    showAlert('Շնորհավորում ենք, դուք հաղթահարեցիք առաջին փուլը: <br>' + self.timer.end());
+                                    if(stages.eq(1).data('gameName')){
+                                        chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){
+
+                                            self.section.children().not('button').remove();
+                                            self.bigDiv.html('');
+                                            self.table.html('');
+                                            self.table.removeClass('tableBackground');
+                                            self.timer.end();
+                                            self.createTable();
+                                            self.puzzleEffect();
+                                            self.movePieces();
+                                            self.timeEnd(); }, 'numberGame' );
+                                    }else{
+                                        playAgainButton(function(){
+                                            self.play();
+                                        })
+                                    }
+                                    self.clearTimeouts();
                                 },3000)
+
                             }
                             $(this).off('mousedown touchstart');
                         }
@@ -285,15 +317,40 @@ $(document).ready(function(){
             });
         };
         this.clearTimeouts = function(){
-            for (let i = 0; i < self.timeouts.length; i++){
+            for (var i = 0; i < self.timeouts.length; i++){
                 clearTimeout(self.timeouts[i]);
             }
             self.timeouts = [];
 
         };
+        this.play = function(){
+
+            self.section.children().not('button').remove();
+            self.bigDiv.html('');
+            self.table.html('');
+            self.table.removeClass('tableBackground');
+            self.timer.end();
+            self.createTable();
+            self.puzzleEffect();
+            self.movePieces();
+            self.timeEnd();
+        };
+        this.timeEnd = function(){
+            var lastTimeout = setTimeout(function(){
+                showAlert('Այս խաղը անցնելու համար նախատեսված ժամանակն ավարտվել է: Փորձեք նորից:');
+                self.timer.end();
+                self.puzzlePieces.off('mousedown');
+                self.puzzlePieces.off('touchstart');
+                playAgainButton(function(){
+                    self.play();
+                });
+            },305000);
+            self.timeouts.push(lastTimeout);
+        };
         this.createTable();
         this.puzzleEffect();
         this.movePieces();
+        this.timeEnd();
 
         $(window).on('resize',resizePuzzle);
         function resizePuzzle(){
@@ -304,29 +361,9 @@ $(document).ready(function(){
                     $(this).css('top',(Math.floor(Math.random()*(parseInt(self.section.css('height'))-100))*90/screen.height)+ '%');
             });
         }
-        let timeEnd = setTimeout(function t(){
-            showAlert('Այս խաղը անցնելու համար նախատեսված ժամանակն ավարտվել է: Փորձեք նորից:');
-            self.timer.end();
-            self.puzzlePieces.off('mousedown');
-            self.puzzlePieces.off('touchstart');
-            playAgainButton(function(){
-                self.section.children().not('button').remove();
-                self.bigDiv.html('');
-                self.table.html('');
-                self.table.removeClass('tableBackground');
-                self.timer.end();
-                self.createTable();
-                self.puzzleEffect();
-                self.movePieces();
-                let restart = setTimeout(t,305000);
-                self.timeouts.push(restart);
-
-            });
-        },305000);
-        this.timeouts.push(timeEnd);
         this.endGame = function(){
-            console.log('a');
-            console.log(self.timeouts);
+            // console.log('a');
+            // console.log(self.timeouts);
             self.clearTimeouts();
             $(window).off('resize',resizePuzzle);
         };
@@ -334,35 +371,36 @@ $(document).ready(function(){
 
 
     function Ballons(){
-        let section = $('.game');
-        let bigDiv = $('<div id="ballonBox"></div>');
-        let game = $('<div id="ballonGame"></div>');
-        let score = $('<div><h2>Ձեր հաշիվը՝ 0</h2></div>');
-        let title = $('<h2>Level 3: Ballons</h2>');
+        var section = $('.game');
+        var bigDiv = $('<div id="ballonBox"></div>');
+        var game = $('<div id="ballonGame"></div>');
+        game.css({height: window.innerHeight * 0.7 + 'px'});
+        var score = $('<div><h2>Ձեր հաշիվը՝ 0</h2></div>');
+        var title = $('<h2>Level 3: Ballons</h2>');
         this.o = 0;
         this.balls = [];
-        let speed = 10000;
-        let speedBalloon = 1000;
-        let level = 1;
-        let balloon=['blue-balloon.png','green-Balloon.gif','red-balloon.png','fish.png'];
-        let l = balloon.length;
-        let self = this;
+        var speed = 10000;
+        var speedBalloon = 1000;
+        var level = 1;
+        var balloon=['blue-balloon.png','green-Balloon.gif','red-balloon.png','fish.png'];
+        var l = balloon.length;
+        var self = this;
         this.start = setInterval(addBallons,speedBalloon);
         function addBallons(){
             self.balls.push(new CreateBall());
         }
 
         function CreateBall(){
-            let i = Math.floor(Math.random() * l);
+            var i = Math.floor(Math.random() * l);
             this.el = $('<div><img src="images/ballon_game/'+ balloon[i] + '"></div>');
-            let bal = this.el;
+            var bal = this.el;
             if(i === l - 1){
                 bal.attr('data-value', 1);
                 bal.bonus = true;
             }
-            game.append(bal);
-            let left = (Math.random()) * 90;
-            let top = (Math.random()) * 50;
+            game[0].appendChild(bal[0]);
+            var left = (Math.random()) * 90;
+            var top = (Math.random()) * 50;
             bal.css({'left' : left + '%', 'top' : 100 - top + '%'});
             bal.animate({top: '-=' + (100 - top) + '%', height: '50px', width: '50px'
             }, speed, function(){
@@ -390,7 +428,7 @@ $(document).ready(function(){
             bal.on('dragstart', function(e){e.preventDefault()})
         }
         this.play = function(){
-            section.append(bigDiv.append(title,game,score));
+            appending();
             self.start = setInterval(addBallons,speedBalloon);
             score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
         };
@@ -410,22 +448,23 @@ $(document).ready(function(){
             self.o++;
             if (this.dataset.value === '1'){
                 self.o++;
-                let bon = $('<span>Բոնուս +2</span>');
+                var bon = $('<div class="gameBonus">Բոնուս +2</div>');
                 bon.css({
                     position: 'absolute',
                     top: ev.pageY - 10 + 'px',
                     left: ev.pageX - 30 + 'px',
-                    color: '#fff'
+                    color: '#fff',
+                    width: 'fit-content'
                 });
-                section.append(bon);
-                bon.animate({fontSize: '1.5em', color: 'transparent'}, 1000, function(){bon.remove()});
+                section[0].appendChild(bon[0]);
+                bon.animate({fontSize: '1.2em', color: 'transparent'}, 700, function(){bon.remove()});
             }
             score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
             if(self.o / 20 >= level){
-                let newLevel = $('<h2>Մակարդակ ' + ++level + ' </h2>');
+                var newLevel = $('<h2 class="gameLevel">Մակարդակ ' + ++level + ' </h2>');
                 newLevel.css({position: 'absolute', top: '10px', left: 0, width: '100%'});
-                section.append(newLevel);
-                newLevel.animate({fontSize: '3em', color: 'transparent'}, 1000, function(){newLevel.remove()});
+                section[0].appendChild(newLevel[0]);
+                newLevel.animate({fontSize: '2em', color: 'transparent'}, 1000, function(){newLevel.remove()});
                 speed = (speed > 500) ? speed - 500 : 100;
                 if(speedBalloon > 200){
                     speedBalloon -= 200;
@@ -434,21 +473,27 @@ $(document).ready(function(){
                 }
             }
         });
-        section.append(bigDiv.append(title,game,score));
+        appending();
+        function appending(){
+            bigDiv[0].appendChild(title[0]);
+            bigDiv[0].appendChild(game[0]);
+            bigDiv[0].appendChild(score[0]);
+            section[0].appendChild(bigDiv[0]);
+        }
     }
 
-    window.showAlert = function(val, i){
-        let section = $('<section class="promptContain"></section>');
-        let div = $('<div class="prompt"><div>' + val + '</div></div>');
-        let answer = $('<div class="answer"></div>');
-        let but = $('<button>Ok</button>');
+    window.showAlert = function(val){
+        var section = $('<section class="promptContain"></section>');
+        var div = $('<div class="prompt"><div>' + val + '</div></div>');
+        var answer = $('<div class="answer"></div>');
+        var but = $('<button>Ok</button>');
         but.one('click',function(){
             section.remove();
-            if(i) $('.game').fadeOut(1000,function(){$('.game').remove(); stages.eq(i).trigger('click')});
         });
-
-        $(document.body).append(section.append(div.append(answer.append(but))));
-
+        answer[0].appendChild(but[0]);
+        div[0].appendChild(answer[0]);
+        section[0].appendChild(div[0]);
+        document.body.appendChild(section[0]);
         but.focus();
     };
 
@@ -458,11 +503,11 @@ $(document).ready(function(){
     };
 
     window.countScore = function(where){
-        let watch = $('<h2></h2>');
-        let hours = $('<span>00</span>'), h = 0;
-        let minutes = $('<span>00</span>'), m = 0;
-        let seconds = $('<span>00</span>'), s = 0;
-        let start;
+        var watch = $('<h2></h2>');
+        var hours = $('<span>00</span>'), h = 0;
+        var minutes = $('<span>00</span>'), m = 0;
+        var seconds = $('<span>00</span>'), s = 0;
+        var start;
         this.go = function(){
            start = setInterval(function(){
                 s++;
@@ -483,9 +528,14 @@ $(document).ready(function(){
                 }
 
             },1000);
-           watch.empty();
-            watch.append(hours, ' : ', minutes, ' : ', seconds);
-            $(where).append(watch);
+            watch.empty();
+            watch[0].appendChild(hours[0]);
+            watch[0].appendChild(document.createTextNode(' : '));
+            watch[0].appendChild(minutes[0]);
+            watch[0].appendChild(document.createTextNode(' : '));
+            watch[0].appendChild(seconds[0]);
+            where[0].appendChild(watch[0]);
+            console.log('asldkl')
         };
         this.addClass = function(a){
             watch.addClass(a);
@@ -503,8 +553,8 @@ $(document).ready(function(){
         return (a < 10) ? '0' + a : a;
     }
     window.playAgainButton = function (f){
-        let but = $('<div class = "again"><span>Նորից խաղալ</span></div>');
-        $('.game').append(but);
+        var but = $('<div class = "again"><span>Նորից խաղալ</span></div>');
+        $('.game')[0].appendChild(but[0]);
         $('.again>span').one('click', function(){
             f();
             but.remove();
@@ -512,17 +562,19 @@ $(document).ready(function(){
     };
 
     window.addNumButtons = function(where, fnTodo, del){
-        let numList = $('<div class="numList"></div>');
-        for(let i = 1; i < 10; i++){
-            let btn = $('<div class="numButton">' + i + '</div>');
-            numList.append(btn);
+        var numList = $('<div class="numList"></div>');
+        for(var i = 1; i < 10; i++){
+            var btn = $('<div class="numButton">' + i + '</div>');
+            numList[0].appendChild(btn[0]);
             btn.on('click',fnTodo);
         }
-        let btn = $('<div class="numButton">0</div>');
+        var btn = $('<div class="numButton">0</div>');
         btn.on('click',fnTodo);
-        let back = $('<div class="numButton"><i class="fas fa-arrow-left"></i></div>');
+        var back = $('<div class="numButton"><i class="fas fa-arrow-left"></i></div>');
         back.on('click',del);
-        where.append(numList.append(btn,back));
+        numList[0].appendChild(btn[0]);
+        numList[0].appendChild(back[0])
+        where[0].appendChild(numList[0]);
         numList.css('display', 'none');
         return numList;
     };
@@ -533,11 +585,11 @@ $(document).ready(function(){
     };
 
     window.chooseOne = function(firstStr, secondStr, firstFn, i){
-        let but = $('<div class = "again"><span id="firstBut">' + firstStr + '</span><span id="secondBut">' + secondStr + '</span></div>');
-        $('.game').append(but);
-        let promise = new Promise(function(resolve, reject){
+        var but = $('<div class = "again"><span id="firstBut">' + firstStr + '</span><span id="secondBut">' + secondStr + '</span></div>');
+        $('.game')[0].appendChild(but[0]);
+        var promise = new Promise(function(resolve, reject){
             but.on('click',function(ev){
-                let el = ev.target;
+                var el = ev.target;
                 if(el.id === 'firstBut') resolve(el);
                 else if(el.id === 'secondBut') reject(el);
             })
@@ -547,6 +599,7 @@ $(document).ready(function(){
             but.off('click');
             but.remove();
             but = null;
+            stages.off('click',openGame);
             firstFn();
         }  , function(){
             but.off('click');
@@ -557,9 +610,10 @@ $(document).ready(function(){
     };
 
     function showRules(where,str,fn){
-        let div = $('<div class="rules"><div class="ruleList">' + str + '</div></div>');
-        let btn = $('<div class="start">Սկսել</div>');
-        where.append(div.append(btn));
+        var div = $('<div class="rules"><div class="ruleList">' + str + '</div></div>');
+        var btn = $('<div class="start">Սկսել</div>');
+        div[0].appendChild(btn[0])
+        where[0].appendChild(div[0]);
         btn.one('click', start);
 
         function start(){
