@@ -1,12 +1,12 @@
 (function(){
     window.Questions = function(){
+        var self = this;
         this.section = $('.game');
         this.bigDiv = $('<div id="miniSection"></div>');
         this.points = $('<h2 id="points">Ձեր հաշիվը՝ 0</h2>');
         this.title = $('<h2>Level 2: Number Game</h2>');
         this.big = $('<div id="big"></div>');
         this.questions = $('<div id="questions"></div>');
-        this.questions.css({height: window.innerHeight - 50 + 'px'});
         this.input = $('<input id="input" type="text" placeholder="Նշեք ճիշտ պատասխանը">');
         this.bigDiv[0].appendChild(this.title[0]);
         this.big[0].appendChild(this.questions[0]);
@@ -14,14 +14,13 @@
         this.bigDiv[0].appendChild(this.big[0]);
         this.bigDiv[0].appendChild(this.points[0]);
         this.section[0].appendChild(this.bigDiv[0]);
-        var self = this;
         this.numList = addNumButtons(self.bigDiv,function(){
             self.input[0].value += this.innerText;
             checkInput();
         }, function(){
             self.input[0].value = self.input.val().slice(0,-1);
         });
-
+        setSize();
         this.play = function(){
             this.count = 0;
             this.randomMultiple = 100;
@@ -33,13 +32,13 @@
             this.input.val('');
 
             if(window.orientation === undefined) self.input[0].focus();
-            else this.numList.css('display', 'flex');
+            else this.numList.addClass('flex');
 
             bindEvents();
+
         };
 
         this.endGame = function(){
-            console.log('dsfmk')
             removeEvents();
             // removeNumButtons();
             clearInterval(self.int);
@@ -60,17 +59,22 @@
             self.input.on('keydown', checkNum);
             self.input.on('keyup', checkInput);
             self.input.on('focus', function(){
-                self.numList.css('display', 'none');
+                self.numList.removeClass('flex');
             });
             self.input.on('blur', function(){
-                self.numList.css('display', 'flex');
-            })
+                self.numList.addClass('flex');
+            });
+            $(window).on('resize',setSize);
+
+        }
+        function setSize(){
+            self.questions.css({height: parseInt(self.big.css('height')) - 40 + 'px'});
         }
         function removeEvents(){
             self.input.off('keydown', checkNum);
             self.input.off('keyup', checkInput);
+            $(window).off('resize',setSize);
         }
-
         function checkNum(ev){
             var code;
             if (ev.keyCode) code = ev.keyCode; else if (ev.which) code = ev.which;
@@ -78,7 +82,7 @@
             if((code < 48 || code > 57) && code !== 8){ev.stopImmediatePropagation(); ev.preventDefault(); }
         }
         function checkInput(){
-            var val = self.input.val();
+            var val =  self.input[0].value|| self.input.val();
             var alast = $('.a:last');
             if(val && val === alast.text()){
                 alast.remove();
@@ -102,8 +106,8 @@
                 paddingBottom: '+=15px',
                 paddingLeft: '+=25px',
                 paddingRight: '+=25px',
-                fontSize: '+=1em',
-                borderWidth: '+=1px'
+                fontSize: '+=1.3em',
+                width: '196px',
             },1500,function () {
                 div.animate({
                     top: '+=90%'
@@ -114,11 +118,10 @@
 
             self.set.push(setInterval(function(){
                 var divs = $('.a:last');
-                console.log(divs.position().top + parseInt(divs.css('height'))*1.3, self.input.position().top)
                 if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= self.input.position().top){
                     self.endGame();
 
-                    if(self.count >= 2){
+                    if(self.count >= 40){
                         openNextStage(2,'ballons');
                         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր');
                         chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );

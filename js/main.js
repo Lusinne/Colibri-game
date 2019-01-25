@@ -374,7 +374,7 @@ $(document).ready(function(){
         var section = $('.game');
         var bigDiv = $('<div id="ballonBox"></div>');
         var game = $('<div id="ballonGame"></div>');
-        game.css({height: window.innerHeight * 0.7 + 'px'});
+        setSizeGame();
         var score = $('<div><h2>Ձեր հաշիվը՝ 0</h2></div>');
         var title = $('<h2>Level 3: Ballons</h2>');
         this.o = 0;
@@ -385,11 +385,14 @@ $(document).ready(function(){
         var balloon=['blue-balloon.png','green-Balloon.gif','red-balloon.png','fish.png'];
         var l = balloon.length;
         var self = this;
+        $(window).on('resize', setSizeGame);
         this.start = setInterval(addBallons,speedBalloon);
         function addBallons(){
             self.balls.push(new CreateBall());
         }
-
+        function setSizeGame(){
+            game.css({height: window.innerHeight * 0.7 + 'px'});
+        }
         function CreateBall(){
             var i = Math.floor(Math.random() * l);
             this.el = $('<div><img src="images/ballon_game/'+ balloon[i] + '"></div>');
@@ -431,6 +434,7 @@ $(document).ready(function(){
             appending();
             self.start = setInterval(addBallons,speedBalloon);
             score.html('<h2>Ձեր հաշիվը՝ ' + self.o + '</h2>');
+            $(window).on('resize', setSizeGame);
         };
         this.endGame = function(){
             self.o = 0;
@@ -441,6 +445,7 @@ $(document).ready(function(){
             self.balls = [];
             clearInterval(self.start);
             game.empty();
+            $(window).off('resize', setSizeGame);
         };
         game.on("mousedown", 'div', function(ev){
             $(this).stop();

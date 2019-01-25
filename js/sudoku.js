@@ -1,28 +1,31 @@
 (function(){
 window.Sudoku = function(){
-	let self = this;
+	var self = this;
 	this.bigDiv = $('<div></div>');
-	this.sudoku = $('<div class="sudoku" id="sudoku"></div>');
+	this.sudoku = $('<div class="sudoku flex" id="sudoku"></div>');
 	this.title = $('<h2 class="sudokuh">Level 4: Sudoku</h2>');
-		for(let i = 0, k = 0; i < 9; i++){
-			let sudokuSection = $('<div class="sudokuSection" id="sudokuSection' + i + '"></div>');
-			for(let j = 0; j < 9; j++, k++){
-				let sudokuSquare = $('<div class="sudokuSquare" id="square_' + (parseInt(j/3) + (i-i%3)) + '_' + (j%3 + (i%3)*3) + '"><span></span><span></span></div>');
-				sudokuSection.append(sudokuSquare);
+		for(var i = 0, k = 0; i < 9; i++){
+			var sudokuSection = $('<div class="sudokuSection flex" id="sudokuSection' + i + '"></div>');
+			for(var j = 0; j < 9; j++, k++){
+				var sudokuSquare = $('<div class="sudokuSquare" id="square_' + (parseInt(j/3) + (i-i%3)) + '_' + (j%3 + (i%3)*3) + '"><span></span><span></span></div>');
+				sudokuSection[0].appendChild(sudokuSquare[0]);
 			}
-			self.sudoku.append(sudokuSection);
+			self.sudoku[0].appendChild(sudokuSection[0]);
 		}
 
 	// this.play();
 	this.bottom = $('<div id="hintDiv"><div id="hintDivInner"></div></div><div id="debug" style="position:absolute;left:30px;top:600px"></div>');
-    $('.game').append(this.bigDiv.append(this.title,this.sudoku.append(this.bottom)));
+    this.bigDiv[0].appendChild(this.title[0]);
+    this.sudoku[0].appendChild(this.bottom[0]);
+    this.bigDiv[0].appendChild(this.sudoku[0]);
+	$('.game')[0].appendChild(this.bigDiv[0]);
     this.timer = new countScore(this.bigDiv);
     this.timer.addClass('sudokuh');
     this.timer.go();
     if(window.orientation !== undefined){
         this.numButton = addNumButtons($('.game'),insertNumber,insertNumber);
         this.numButton.css('display','flex');
-        this.bigDiv.append(this.numButton);
+        this.bigDiv[0].appendChild(this.numButton[0]);
     }
 	this.squareObjects = [];
     this.level = 1;
@@ -140,15 +143,15 @@ window.Sudoku = function(){
 		if(self.gameFinished) return;
 		var obj = document.getElementById('sudoku');
 		if (!obj) return;
-        let correct = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        var correct = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
         function checkSquare(correct) {
-            let cube = obj.querySelectorAll('.sudokuSection');
-            let bool = true;
-            for (let i = 0; i < cube.length; i++) {
-                let square = cube[i].querySelectorAll('div');
-                let squareList = [];
-                for (let j = 0; j < square.length; j++) {
+            var cube = obj.querySelectorAll('.sudokuSection');
+            var bool = true;
+            for (var i = 0; i < cube.length; i++) {
+                var square = cube[i].querySelectorAll('div');
+                var squareList = [];
+                for (var j = 0; j < square.length; j++) {
                     if (square[j].style.backgroundColor) {
                         squareList.push(+square[j].querySelector('span').innerText);
                     }
@@ -164,11 +167,11 @@ window.Sudoku = function(){
             return bool;
         }
         function checkRows(correct) {
-            let bool = true;
-            for (let i = 0; i < 9; i++) {
-                let rows = obj.querySelectorAll("div>div[id^='square_" + i + "_']");
-                let squareList = [];
-                for (let j = 0; j < rows.length; j++) {
+            var bool = true;
+            for (var i = 0; i < 9; i++) {
+                var rows = obj.querySelectorAll("div>div[id^='square_" + i + "_']");
+                var squareList = [];
+                for (var j = 0; j < rows.length; j++) {
                     if (rows[j].style.backgroundColor) {
                         squareList.push(+rows[j].querySelector('span').innerText);
                     }
@@ -184,11 +187,11 @@ window.Sudoku = function(){
             return bool;
         }
         function checkColumn(correct) {
-            let bool = true;
-            for (let i = 0; i < 9; i++) {
-                let rows = obj.querySelectorAll("div>div[id$='_" + i + "']");
-                let squareList = [];
-                for (let j = 0; j < rows.length; j++) {
+            var bool = true;
+            for (var i = 0; i < 9; i++) {
+                var rows = obj.querySelectorAll("div>div[id$='_" + i + "']");
+                var squareList = [];
+                for (var j = 0; j < rows.length; j++) {
                     if (rows[j].style.backgroundColor) {
                         squareList.push(+rows[j].querySelector('span').innerText);
                     }

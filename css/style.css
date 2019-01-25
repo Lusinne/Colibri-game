@@ -27,6 +27,13 @@ body{
 	height: 100vh;
 	width: 100%;
 }
+.flex{
+	display: -webkit-box !important;
+	display: -moz-box !important;
+	display: -ms-flexbox !important;
+	display: -webkit-flex !important;
+	display: flex !important;
+}
 .container{
 	height: 100vh;
 	width: 100%;
@@ -118,17 +125,14 @@ body{
 }
 .promptContain{
 	position: fixed;
-	height: 100vh;
+	height: 100%;
 	width: 100%;
 	top: 0;
 	left: 0;
 	z-index: 99998;
 }
 .prompt{
-	/*position: fixed;*/
-	/*top: 0;*/
 	margin: 0 auto;
-	/*left: calc(50% - 250px);*/
 	width: 500px;
 	min-height: 200px;
 	background: rgb(7,60,118);
@@ -319,6 +323,7 @@ body{
 .numList{
 	width: 100%;
 	min-width: 350px;
+	-webkit-box-pack: justify;
 	justify-content: space-between;
 	margin-bottom: 10px;
 
