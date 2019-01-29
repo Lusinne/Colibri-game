@@ -4,14 +4,16 @@ window.Sudoku = function(){
 	this.bigDiv = $('<div></div>');
 	this.sudoku = $('<div class="sudoku flex" id="sudoku"></div>');
 	this.title = $('<h2 class="sudokuh">Level 4: Sudoku</h2>');
-		for(var i = 0, k = 0; i < 9; i++){
-			var sudokuSection = $('<div class="sudokuSection flex" id="sudokuSection' + i + '"></div>');
-			for(var j = 0; j < 9; j++, k++){
-				var sudokuSquare = $('<div class="sudokuSquare" id="square_' + (parseInt(j/3) + (i-i%3)) + '_' + (j%3 + (i%3)*3) + '"><span></span><span></span></div>');
-				sudokuSection[0].appendChild(sudokuSquare[0]);
-			}
-			self.sudoku[0].appendChild(sudokuSection[0]);
-		}
+    for(var i = 0, k = 0; i < 9; i++){
+        var sudokuSection = $('<div class="sudokuSection flex" id="sudokuSection' + i + '"></div>');
+        for(var j = 0; j < 9; j++, k++){
+            var sudokuSquare = $('<div class="sudokuSquare" id="square_' + (parseInt(j/3) + (i-i%3)) + '_' + (j%3 + (i%3)*3) + '"><span></span><span></span></div>');
+            sudokuSection[0].appendChild(sudokuSquare[0]);
+        }
+        setNoFlex(sudokuSection);
+        self.sudoku[0].appendChild(sudokuSection[0]);
+    }
+    setNoFlex(self.sudoku);
 
 	// this.play();
 	this.bottom = $('<div id="hintDiv"><div id="hintDivInner"></div></div><div id="debug" style="position:absolute;left:30px;top:600px"></div>');
@@ -31,6 +33,11 @@ window.Sudoku = function(){
     this.level = 1;
 	this.countSquares = [36,36,34,32,31,30];
 	this.gameFinished = false;
+
+	function setNoFlex(elem){
+        var d = getComputedStyle(elem[0]);
+        if (!(( 'flexWrap' in d) || ('WebkitFlexWrap' in d) || ('msFlexWrap' in d))) elem.children().addClass('no-flex');
+	}
 
 	function shuffleBoard()
 	{
@@ -210,12 +217,26 @@ window.Sudoku = function(){
             checkRows(correct) &&
             checkSquare(correct)) {
            		self.gameFinished = true;
+
+           		// $.ajax({
+				// 	url: 'file.php',
+				// 	method: 'post',
+				// 	data:{
+                //         gameId: 4,
+                //         action: 'time',
+                //         addProgress: self.timer.getScore()
+				// 	},
+				// 	dataType: 'json'
+				// })
+				// 	.done(function(req){
+                //         showAlert('Շնորհավորում եմ։ Դուք հաղթահարեցիք նաև չորրորդ փուլը!!!!! <br>' + timer.end());
+                //         self.endGame();
+                //         playAgainButton(self.play);
+				// 	});
+
 				showAlert('Շնորհավորում եմ։ Դուք հաղթահարեցիք նաև չորրորդ փուլը!!!!! <br>' + timer.end());
 				self.endGame();
             	playAgainButton(self.play);
-
-            // stages.eq(2).data('gameName','numberGame');
-				// showAlert(timer.end());
         }
 
 	}

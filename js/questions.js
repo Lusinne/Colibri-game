@@ -121,7 +121,23 @@
                 if(divs.position() && (divs.position().top + parseInt(divs.css('height'))*1.3)  >= self.input.position().top){
                     self.endGame();
 
-                    if(self.count >= 40){
+                    if(self.count >= 3){
+                        // $.ajax({
+                        //     url: 'file.php',
+                        //     method: 'post',
+                        //     data:{
+                        //         gameId: 2,
+                        //         action: 'points',
+                        //         addProgress: self.count
+                        //     },
+                        //     dataType: 'json'
+                        // })
+                        //     .done(function(req){
+                        //         openNextStage(2,'ballons');
+                        //         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր');
+                        //         chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );
+                        //     });
+
                         openNextStage(2,'ballons');
                         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երկրորդ փուլը: <br> Դուք հավաքել եք ' + self.count + ' միավոր');
                         chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'ballons' );

@@ -1,11 +1,4 @@
 $(document).ready(function(){
-    // $(img)
-    function setSizes(){
-        $('.container').css({
-            'height': window.innerHeight + 'px',
-            'width': window.innerWidth + 'px'
-        });
-    }
     setSizes();
     $(window).on('resize', setSizes);
     $(window).on('keydown', function(ev){
@@ -16,10 +9,46 @@ $(document).ready(function(){
     });
 
     window.stages = $('.stages img');
-    stages.eq(0).data('gameName','puzzle');
-    stages.eq(1).data('gameName','numberGame');
-    stages.eq(2).data('gameName','ballons');
-    stages.eq(3).data('gameName','sudoku');
+    var gamesArray = ['puzzle', 'numberGame', 'ballons', 'sudoku'];
+    // $.ajax({
+    //     url: 'file.php',
+    //     method: 'post',
+    //     data:{
+    //         msg: 'Hi!',
+    //     },
+    // })
+    //     .done(function(req){
+    //         var n = (req) ? req : 4;
+    //         for(var i = 0; i < 4; i++){
+    //             var lock;
+    //             if(i < n){
+    //                 stages.eq(i).data('gameName', gamesArray[i]);
+    //                 stages.eq(i).addClass('activeGame');
+    //                 lock = $('<i class="fas fa-lock-open"></i>');
+    //
+    //             }else{
+    //                 lock = $('<i class="fas fa-lock"></i>');
+    //             }
+    //             var h3 = stages.eq(i).next('h3')[0];
+    //             h3.insertBefore(lock[0], h3.childNodes[0]);
+    //             stages.one('click',openGame);
+    //         }
+    //     });
+
+
+    for(var i = 0; i < 4; i++){
+        var lock;
+        if(i < 2){
+            stages.eq(i).data('gameName', gamesArray[i]);
+            stages.eq(i).addClass('activeGame');
+            lock = $('<i class="fas fa-lock-open"></i>');
+
+        }else{
+            lock = $('<i class="fas fa-lock"></i>');
+        }
+        var h3 = stages.eq(i).next('h3')[0];
+        h3.insertBefore(lock[0], h3.childNodes[0]);
+    }
     stages.one('click',openGame);
 
     function openGame(e, gn){
@@ -155,7 +184,12 @@ $(document).ready(function(){
             }
         }
     }
-
+    function setSizes(){
+        $('.container').css({
+            'height': window.innerHeight + 'px',
+            'width': window.innerWidth + 'px'
+        });
+    }
     function Puzzle(){
         this.section = $('.game');
         this.bigDiv = $('<div></div>');
@@ -413,6 +447,22 @@ $(document).ready(function(){
                 }
                 if(self.o >= 100){
                     openNextStage(3,'sudoku');
+
+                    // $.ajax({
+                    //     url: 'file.php',
+                    //     method: 'post',
+                    //     data:{
+                    //         gameId: 3,
+                    //         action: 'points',
+                    //         addProgress: self.o
+                    //     },
+                    //     dataType: 'json'
+                    // })
+                    //     .done(function(req){
+                    //         showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br>  Դուք հավաքել եք ' + self.o + ' միավոր');
+                    //         chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'sudoku' );
+                    //     });
+
                     showAlert('Շնորհավորում ենք, Դուք հաղթահարեցիք երրորդ փուլը: <br>  Դուք հավաքել եք ' + self.o + ' միավոր');
                     chooseOne('Սկսել նորից', 'Հաջորդ խաղ', function(){ self.play() }, 'sudoku' );
                 }else if($('.game').length){
@@ -504,6 +554,7 @@ $(document).ready(function(){
 
     window.openNextStage = function(num,name){
         stages.eq(num).data('gameName',name);
+        stages.eq(num).next('h3').find('i').remove();
         stages.one('click',openGame);
     };
 
@@ -540,7 +591,6 @@ $(document).ready(function(){
             watch[0].appendChild(document.createTextNode(' : '));
             watch[0].appendChild(seconds[0]);
             where[0].appendChild(watch[0]);
-            console.log('asldkl')
         };
         this.addClass = function(a){
             watch.addClass(a);
@@ -552,8 +602,29 @@ $(document).ready(function(){
         this.restart = function(){
             h = 0; m = 0; s = 0;
             hours.text('00'); minutes.text('00'); seconds.text('00');
+        };
+        this.getScore = function(){
+            return addZero(m) + ':' + addZero(s);
         }
     };
+
+    // function topTen(gameId){
+    //     $.ajax({
+    //         url: 'file.php',
+    //         method: 'post',
+    //         data:{
+    //             gameId: gameId
+    //         },
+    //         dataType: 'json'
+    //     })
+    //         .done(function(props){
+    //             var ten = $('<div class="ten"><div class="tenTitle"></div><div>Խաղացող</div><div>Միավոր</div></div></div>');
+    //             for(var i = 0; i < props.length; i++){
+    //                 var div = $('<div class = "tenElem">' + i + ' ' + props[i].name + props[i].points + '</div>')
+    //                 ten[0].appendChild(div[0]);
+    //             }
+    //         })
+    // }
     function addZero(a){
         return (a < 10) ? '0' + a : a;
     }

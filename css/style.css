@@ -34,6 +34,11 @@ body{
 	display: -webkit-flex !important;
 	display: flex !important;
 }
+.no-flex{
+	display: inline-block !important;
+	text-align: center !important;
+	vertical-align: middle !important;
+}
 .container{
 	height: 100vh;
 	width: 100%;
@@ -65,13 +70,24 @@ body{
 .stages:nth-of-type(3n){
 	margin-top: 8%;
 }
-.stages img:hover{
+.activeGame:hover{
 	cursor: pointer;
-	transition-duration: .2s; 
+	-webkit-transition-duration: .2s;
+	-moz-transition-duration: .2s;
+	-ms-transition-duration: .2s;
+	-o-transition-duration: .2s;
+	transition-duration: .2s;
+	-webkit-transform: scale(1.4);
+	-moz-transform: scale(1.4);
+	-ms-transform: scale(1.4);
+	-o-transform: scale(1.4);
 	transform: scale(1.4);
 }
-.stages img:hover+h3{
+.activeGame:hover+h3{
 	opacity: .8;
+}
+.locked{
+	/*background: url(../images/lock.png);*/
 }
 .game{
 	width: 0;
