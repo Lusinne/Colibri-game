@@ -1,0 +1,66 @@
+#big{
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	-moz-flex-direction: column;
+	flex-direction: column;
+	-webkit-box-orient: vertical;
+	justify-content: space-between;
+	-webkit-box-pack: justify;
+	-webkit-box-align: center;
+	align-items: center;
+	height: 80%;
+}
+#questions{
+	overflow: hidden;
+}
+
+#miniSection input{
+	width: 200px;
+	padding: 10px;
+	border-radius: 10px;
+	height: 50px;
+	display: block;
+	border: 0;
+	background: transparent;
+    color: white;
+	-webkit-user-select: auto;
+}
+#miniSection input::placeholder{
+	text-align: center;
+	color: rgba(255,255,255,1);
+}
+#miniSection input:focus{
+	background: rgba(255,255,255,.1);
+}
+.a{
+	top: 0;
+	font-size: 0;
+	text-align: center;
+	margin: 10px auto;
+	border-radius: 10px;
+	background: rgba(255,255,255,.2);
+	box-shadow: 0 0 3px 0 rgba(255,255,255,.5);
+	box-sizing: border-box;
+	position: absolute;
+    color: white;
+}
+#miniSection{
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	-moz-flex-direction: column;
+	-webkit-box-orient: vertical;
+	flex-direction: column;
+	-webkit-box-pack: center;
+    justify-content: center;
+	-webkit-box-align: center;
+    align-items: center;
+    height: 100%;
+}

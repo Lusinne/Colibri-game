@@ -1,0 +1,78 @@
+body{
+	font-family: Trebuchet MS, Lucida Sans Unicode, Arial, sans-serif;
+}
+
+.sudoku{
+	width:456px;
+	height:456px;
+	border:2px solid #000;
+	display: flex;
+	flex-wrap: wrap;
+	-webkit-flex-wrap: wrap;
+	margin: 0 auto;
+}
+.sudokuSquare,.sudokuSquareHighlighted{
+	width:48px;
+	height:48px;
+	border:1px solid #000000;
+	padding:1px;
+	line-height:48px;
+	font-size:30px;
+	text-align:center;		
+	background-color:#FFF;
+	cursor:default;
+}
+
+.sudokuSquareHighlighted{
+	border:2px solid #317082;
+	width:48px;
+	height:48px;
+	padding:0;
+	background-color:#E2EBED;
+}
+
+.sudokuSection{
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+	-webkit-box-pack: justify;
+	justify-content: center;
+	-webkit-box-align: center;
+	align-items: center;
+	width:150px;
+	height:150px;
+	border:1px solid #000000;
+}
+@media (max-width: 900px) and (min-width: 501px){
+	h2.sudokuh{
+		position: absolute;
+		top: 30px;
+		right: 20px;
+	}
+	h2.sudokuh:last-of-type{
+		top: 70px;
+	}
+}
+@media(max-width: 500px), (orientation: landscape) and (max-width: 900px){
+	.sudoku{
+		width:280px;
+		height:280px;
+	}
+	.sudokuSquare,.sudokuSquareHighlighted{
+		width:30px;
+		height:30px;
+		line-height:30px;
+		font-size:20px;
+	}
+	.sudokuSquareHighlighted{
+		border:2px solid #317082;
+		width:30px;
+		height:30px;
+		background-color:#E2EBED;
+	}
+	.sudokuSection{
+		width:92px;
+		height:92px;
+	}
+
+}

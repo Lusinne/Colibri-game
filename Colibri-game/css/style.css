@@ -1,0 +1,512 @@
+*{
+	margin: 0;
+	padding: 0;
+	line-height: 1;
+	box-sizing: border-box;
+	outline: none;
+	-webkit-transition-timing-function: linear;
+	-moz-transition-timing-function: linear;
+	-o-transition-timing-function: linear;
+	transition-timing-function: linear;
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	-webkit-user-select: none;
+	/*
+      Introduced in IE 10.
+      See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+	-ms-user-select: none;
+	user-select: none;
+}
+/*html, body {
+	overscroll-behavior-y: contain;
+	overflow: hidden;
+}*/
+
+body{
+	height: 100vh;
+	width: 100%;
+}
+.flex{
+	display: -webkit-box !important;
+	display: -moz-box !important;
+	display: -ms-flexbox !important;
+	display: -webkit-flex !important;
+	display: flex !important;
+}
+.no-flex{
+	display: inline-block !important;
+	text-align: center !important;
+	vertical-align: middle !important;
+}
+.container{
+	height: 100vh;
+	width: 100%;
+	position: relative;
+	background: url('../images/bg.jpg') no-repeat top left fixed;
+	background-size: cover;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: row;
+	-moz-flex-direction: row;
+	flex-direction: row;
+	overflow: hidden;
+}
+.stages{
+	width: 220px;
+	height: 200px;
+	text-align: center;
+}
+.stages h3{
+	color: #E7E9E7;
+	margin-top: -5%;
+}
+.stages img{
+	width: 100%;
+}
+.stages:nth-of-type(3n){
+	margin-top: 8%;
+}
+.activeGame:hover{
+	cursor: pointer;
+	-webkit-transition-duration: .2s;
+	-moz-transition-duration: .2s;
+	-ms-transition-duration: .2s;
+	-o-transition-duration: .2s;
+	transition-duration: .2s;
+	-webkit-transform: scale(1.4);
+	-moz-transform: scale(1.4);
+	-ms-transform: scale(1.4);
+	-o-transform: scale(1.4);
+	transform: scale(1.4);
+}
+.activeGame:hover+h3{
+	opacity: .8;
+}
+.locked{
+	/*background: url(../images/lock.png);*/
+}
+.game{
+	width: 0;
+	height: 0;
+	background: rgba(0,0,0,.4);
+	border-radius: 20px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-pack: center;
+	justify-content: space-evenly;
+	-webkit-box-align: center;
+	align-items: center;
+	-webkit-box-shadow: 2px 2px 30px -3px rgba(165,186,194,1);
+	-moz-box-shadow: 2px 2px 30px -3px rgba(165,186,194,1);
+	-ms-box-shadow: 2px 2px 30px -3px rgba(165,186,194,1);
+	-o-box-shadow: 2px 2px 30px -3px rgba(165,186,194,1);
+	box-shadow: 2px 2px 30px -3px rgba(165,186,194,1);
+}
+.game h2{
+	color: #dddddd;
+	text-align: center;
+	margin: 2% 0;
+	font-size: 2em;
+	z-index: 1000;
+}
+#close{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: 25px;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+	border-radius: 50%;
+	border: none;
+	font-size: 0.6em;
+	font-weight: bold;
+	background: rgba(240,240,240,.8);
+	color: #0C2670;
+	z-index: 9999;
+}
+#close:hover{
+	cursor: pointer;
+	background: #fff;
+}
+.promptContain{
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 99998;
+}
+.prompt{
+	margin: 0 auto;
+	width: 500px;
+	min-height: 200px;
+	background: rgb(7,60,118);
+	border-radius: 5px;
+	-webkit-box-shadow: 0 1px 10px -3px #1F6485;
+	-moz-box-shadow: 0 1px 10px -3px #1F6485;
+	-o-box-shadow: 0 1px 10px -3px #1F6485;
+	box-shadow: 0 1px 10px -3px #1F6485;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	-moz-flex-direction: column;
+	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-justify-content: space-between;
+	justify-content: space-between;
+	-webkit-box-pack: justify;
+	padding: 2%;
+	z-index: 99999;
+}
+.prompt div{
+	font-size: 1.3em;
+	color: #E7E9E7;
+	z-index: 999;
+}
+.answer{
+	text-align: right !important;
+}
+.answer button{
+	color: #E7E9E7;
+	padding: 10px 20px;
+	border: 2px solid #E7E9E7;
+	background: transparent;
+	border-radius: 20px;
+	margin-left: 20px;
+}
+.answer button:hover, .answer button:focus{
+	color: rgb(7,60,118);
+	background: #E7E9E7;
+	border-color: #E7E9E7;
+	cursor: pointer;
+}
+.gameBonus{
+	font-size: 0.7em;
+}
+#puzzle{
+	background: rgba(255,255,255,0.4);
+	border: 1px solid black;
+}
+.bigPiece{
+	transition: transform 2s;
+	position: absolute;
+}
+.main::after{
+	content: "";
+	display: block;
+	clear: both;
+}
+.clear{
+	clear: both;
+}
+.nest{
+	float: left;
+}
+.pieces-animate{
+	-webkit-animation: piecesAnimate 1s linear;
+	-o-animation: piecesAnimate 1s linear;
+	animation: piecesAnimate 1s linear;
+	-webkit-animation-fill-mode: forwards;
+	-moz-animation-fill-mode: forwards;
+	-o-animation-fill-mode: forwards;
+	animation-fill-mode: forwards;
+}
+.animateEnd{
+	-webkit-transform: rotate(0deg) !important;
+	-moz-transform: rotate(0deg)!important;
+	-ms-transform: rotate(0deg)!important;
+	-o-transform: rotate(0deg)!important;
+	transform: rotate(0deg)!important;
+}
+@-webkit-keyframes piecesAnimate {
+	100%{
+		-webkit-transform: rotate(0);
+		-moz-transform: rotate(0);
+		-ms-transform: rotate(0);
+		-o-transform: rotate(0);
+		transform: rotate(0);
+	}
+}
+.tableBackground{
+	-webkit-animation: background 3s linear;
+	-o-animation: background 3s linear;
+	-moz-animation: background 3s linear;
+	animation: background 3s linear;
+}
+@-webkit-keyframes background{
+	10%{
+		background-size: 90%;
+	}
+	20%{
+		background-size: 80%;
+		background-position: top left;
+	}
+	40%{
+		background-size: 60%;
+		background-position: bottom right;
+	}
+	60%{
+		background-size: 40%;
+		background-position: center;
+	}
+	80%{
+		background-size: 20%;
+		background-position: top right;
+	}
+	100%{
+		background-size: 0;
+		background-position: bottom left;
+	}
+
+}
+.higher{
+	z-index: 100;
+}
+#ballonBox{
+	width: 70%;
+}
+#ballonGame{
+	/*height: 70%;*/
+	width: 100%;
+	position: relative;
+	overflow: hidden;
+	cursor: url('../images/ballon_game/needle-32.png'),auto;
+	background-color: rgba(255, 255, 255,.3);
+}
+#ballonGame>div{
+	height: 20px;
+	width:20px;
+	position: absolute;
+	z-index: 10;
+}
+#ballonGame>div:active{
+	cursor:url('../images/ballon_game/needle-16.png'),pointer;
+}
+#ballonGame img{
+	height: 100%;
+}
+.again{
+	position: absolute;
+	width: 100%;
+	left: 0;
+	top: 60%;
+	text-align: center;
+	font-size: 1.2em;
+	color: #fff;
+}
+.again>span{
+	border-radius: 15px;
+	padding: 8px 15px;
+	border: 2px solid;
+	margin: 10px;
+	background: rgba(255,255,255,.1);
+}
+.again>span:hover{
+	cursor: pointer;
+	background: #fff;
+	border-color: #fff;
+	color: rgba(7,60,118,.7);
+}
+.rules{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	background-color: rgba(7,60,118,.8);
+	background-size: cover;
+	font-size: 1.5em;
+	text-align: center;
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	-moz-flex-direction: column;
+	-webkit-box-orient: vertical;
+	flex-direction: column;
+	align-items: center;
+	-webkit-box-align: center;
+	justify-content: center;
+	-webkit-box-pack: center;
+	color: #fff;
+	overflow-y: auto;
+	padding: 30px 0 10px;
+	border-radius: 20px;
+}
+.rules>div{
+	margin: 3% 0;
+}
+.ruleList{
+	width: 800px;
+	line-height: 1.3;
+}
+.start{
+	border: 2px solid #fff;
+	border-radius: 30px;
+	padding: 10px 30px;
+}
+.start:hover{
+	background-color: #fff;
+	color:rgb(7,60,118);
+	cursor: pointer;
+}
+
+.numList{
+	width: 100%;
+	min-width: 350px;
+	-webkit-box-pack: justify;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+.numButton{
+	padding: 5px 10px 6px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	background: #dddddd;
+	color: #0C2670;
+	flex-shrink: 1;
+	cursor: pointer;
+	font-weight: bold;
+}
+.numButton:active{
+	color: #dddddd;
+	background: #0C2670;
+}
+
+#logOut,.userName{
+	position: fixed;
+	top: 20px;
+	right: 30px;
+	z-index: 1;
+	color: #fff;
+	font-size: 1.2em;
+	text-decoration: none;
+}
+.userName{
+	right: 0;
+	left: 30px;
+}
+#logOut:hover{
+	color: #c5baba;
+}
+.ten{
+	color: #DDDDDD;
+	font-size: 1.1em;
+}
+.ten td{
+	padding: 10px;
+}
+.seeTopTen{
+	background: transparent;
+	color: #DDDDDD;
+	border: 1px solid #DDDDDD;
+	padding: 10px;
+	border-radius: 10px;
+}
+@media (max-width: 900px){
+	.prompt{
+		width: 400px;
+		left: calc(50% - 200px);
+	}
+	.game h2{
+		font-size: .9em;
+	}
+	.gameLevel{
+		font-size: 0.8em;
+	}
+	.ruleList{
+		width: 400px;
+	}
+	.ruleList,.start,.rules{
+		font-size: 13pt !important;
+	}
+}
+
+@media (max-width: 500px){
+	.prompt{
+		width: 300px;
+		left: calc(50% - 150px);
+		justify-content: space-around;
+	}
+	h3{
+		font-size: .7em;
+	}
+	.ruleList{
+		width: 300px;
+	}
+	.ruleList,.start,.rules{
+		font-size: 13pt !important;
+	}
+	#firstBut, #secondBut{
+		display: block;
+	}
+	.numList{
+		min-width: 200px;
+		flex-wrap: wrap;
+	}
+}
+@media (max-width: 767px) {
+	.nest{
+		width: 50px;
+		height: 50px;
+	}
+	.main:nth-child(odd) .nest:nth-child(odd) img ,.main:nth-child(even) .nest:nth-child(even) img{
+		width: 85px;
+		height: 50px;
+	}
+	.main:nth-child(odd) .nest:first-child img {
+		width: 68px!important;
+		height: 50px!important;
+	}
+	.main:first-child .nest:nth-child(even) img{
+		height: 67px!important;
+	}
+	.main:nth-child(odd) .nest:nth-child(even) img ,.main:nth-child(even) .nest:nth-child(odd) img{
+		width: 51px;
+		height: 85px;
+	}
+	.main:nth-child(even) .nest:nth-of-type(6) img {
+		width: 68px!important;
+	}
+	.main:last-child .nest:nth-child(odd) img {
+		height: 68px!important;
+	}
+	.ten{
+		font-size: 0.8em;
+	}
+}
+@media (min-width: 768px){
+	.nest{
+		height: 81px;
+		width: 100px;
+	}
+}
+@media (min-width: 992px){
+	.nest{
+		height: 81px;
+		width: 100px;
+	}
+}
+@media (min-width: 1200px){
+	.nest{
+		height: 81px;
+		width: 100px;
+	}
+}
