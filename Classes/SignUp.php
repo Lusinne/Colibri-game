@@ -40,7 +40,7 @@ class SignUp extends User
             case $this->checkReg($email,'email');
                 return false;
         }
-        return 'aaa';
+//        return 'aaa';
         $keys = $this->getKeys($registration);
         $fields = $this->getFields($registration);
 

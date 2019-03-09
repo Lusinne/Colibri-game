@@ -33,6 +33,8 @@ class gameControl extends Database
             }
             elseif (!empty($arr[0]['point'])){
                 $str = (+$points > +$arr[0]['point'])? "UPDATE `userprogress` SET `point`='$points' WHERE id={$arr[0]['id']}": '';
+            }else{
+                print_r($arr[0]);
             }
         }
         else{

@@ -33,9 +33,7 @@
             topTen(2,'point');
             if(window.orientation === undefined) self.input[0].focus();
             else this.numList.addClass('flex');
-            $('.seeTopTen').css('display', 'block');
             bindEvents();
-
         };
 
         this.endGame = function(){
@@ -52,7 +50,6 @@
             self.set = [];
             self.numList.css('display', 'none');
             self.numList.removeClass('flex');
-            $('.seeTopTen').css('display', 'none');
 
         };
 

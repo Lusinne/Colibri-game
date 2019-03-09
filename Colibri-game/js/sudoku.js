@@ -217,13 +217,14 @@ window.Sudoku = function(){
             checkRows(correct) &&
             checkSquare(correct)) {
            		self.gameFinished = true;
-
+                var sendTime = self.timer.end();
+                sendTime = (sendTime > '01 : 00 : 00') ? '59:59' : sendTime.slice(5).split(" ").join('');
            		$.ajax({
 					url: '../getUserInfo.php',
 					method: 'post',
 					data:{
                        gameId: 4,
-                       time: self.timer.getScore(),
+                       time: sendTime,
 						addProgress: true,
 						points: null,
 						progress:5

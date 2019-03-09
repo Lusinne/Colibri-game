@@ -119,7 +119,7 @@ body{
 	font-size: 2em;
 	z-index: 1000;
 }
-#close{
+#close,.closeButton{
 	position: absolute;
 	top: 10px;
 	right: 10px;
@@ -135,7 +135,8 @@ body{
 	color: #0C2670;
 	z-index: 9999;
 }
-#close:hover{
+
+#close:hover, .closeButton:hover{
 	cursor: pointer;
 	background: #fff;
 }
@@ -204,6 +205,10 @@ body{
 .bigPiece{
 	transition: transform 2s;
 	position: absolute;
+	z-index: 1;
+}
+.correct{
+	z-index: 0;
 }
 .main::after{
 	content: "";
@@ -311,15 +316,16 @@ body{
 .again>span{
 	border-radius: 15px;
 	padding: 8px 15px;
-	border: 2px solid;
+	border: 2px solid #fff;
 	margin: 10px;
-	background: rgba(255,255,255,.1);
+	background: #fff;
+	color: rgba(7,60,118,.7);
 }
 .again>span:hover{
-	cursor: pointer;
-	background: #fff;
+	background: rgba(255,255,255,.1);
 	border-color: #fff;
-	color: rgba(7,60,118,.7);
+	cursor: pointer;
+	color: #fff;
 }
 .rules{
 	position: absolute;
@@ -413,12 +419,32 @@ body{
 .ten td{
 	padding: 10px;
 }
+.forTen{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: #00027b;
+	z-index: 10000;
+}
+.forTen table{
+	margin: 20px auto;
+}
 .seeTopTen{
 	background: transparent;
-	color: #DDDDDD;
-	border: 1px solid #DDDDDD;
-	padding: 10px;
-	border-radius: 10px;
+	color: rgba(221,221,221,.9);
+	display: block;
+	margin: 0 auto;
+	border: none;
+
+
+	/*border: 1px solid #DDDDDD;*/
+	/*padding: 10px;*/
+	/*border-radius: 10px;*/
+}
+.hidden{
+	display: none;
 }
 @media (max-width: 900px){
 	.prompt{
@@ -461,6 +487,7 @@ body{
 		min-width: 200px;
 		flex-wrap: wrap;
 	}
+
 }
 @media (max-width: 767px) {
 	.nest{

@@ -15,17 +15,18 @@ if(count($_POST) >= 6){
     $obj = new SignUp($_POST);
     if($answer = $obj->registration($_POST)){
         $_SESSION['user'] = $answer;
-        echo ' asdasd';
-        die;
+//        echo ' asdasd';
+//        die;
         header('location:index.php');
         die;
-    }else{
-        echo 'vvvv';
     }
-    /*else{
+//    else{
+//        echo 'vvvv';
+//    }
+    else{
         header('location:registration/index.html');
         die;
-    }*/
+    }
 }
 elseif(count($_POST) === 2){
     $obj = new SignIn($_POST);

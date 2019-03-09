@@ -61,6 +61,7 @@ $(document).ready(function(){
         if(isMobile){
             fullScreen('in');
             $(window).on('resize', toFullScreen);
+            $('.userName').addClass('hidden');
         }
 
         var section = $('<section class="game"></section>');
@@ -159,6 +160,7 @@ $(document).ready(function(){
                         stages.one('click',openGame);
                         $(document).off('keyup', 'button');
                         $('#logOut').css('display','inline');
+                        $('.userName').removeClass('hidden');
                     })
 
                 })
@@ -355,6 +357,8 @@ $(document).ready(function(){
                             //     finalyPiece.find('img').addClass('animateEnd');
                             // },1000);
                             if($('.correct').length === $('.game img').length){
+                                var sendTime = self.timer.end();
+                                sendTime = (sendTime > '01 : 00 : 00') ? '59:59' : sendTime.slice(5).split(" ").join('');
                                 $.ajax({
                                     url: '../getUserInfo.php',
                                     method: 'post',
@@ -362,7 +366,7 @@ $(document).ready(function(){
                                     data:{
                                         addProgress : true,
                                         gameId : 1,
-                                        time : self.timer.end().slice(5).split(" ").join(''),
+                                        time : sendTime,
                                         progress : 2,
                                         points: null
                                     },
@@ -488,7 +492,8 @@ $(document).ready(function(){
             bal.animate({top: '-=' + (100 - top) + '%', height: '50px', width: '50px'
             }, speed, function(){
                 var sss = self.o;
-                if(bal.bonus){
+                console.log(sss)
+;                if(bal.bonus){
                     bal.remove();
                     return;
                 }
@@ -501,7 +506,7 @@ $(document).ready(function(){
                         data:{
                             gameId: 3,
                             addProgress: true,
-                            points: self.o,
+                            points: sss,
                             time: null,
                             progress:4
                         },
@@ -619,21 +624,21 @@ $(document).ready(function(){
         this.go = function(){
            start = setInterval(function(){
                 s++;
-                seconds.text(addZero(s));
                 if(s === 60){
                     s = 0;
                     m++;
-                    minutes.text(addZero(m));
                 }
-                if(m === 60){
-                    m = 0;
-                    h++;
-                    hours.text(addZero(h));
-                }
-                if(h === 24){
-                    h = 0;
-                    hours.text(addZero(h));
-                }
+               seconds.text(addZero(s));
+               if(m === 60){
+                   m = 0;
+                   h++;
+               }
+               minutes.text(addZero(m));
+               if(h === 24){
+                   h = 0;
+                   // hours.text(addZero(h));
+               }
+               hours.text(addZero(h));
 
             },1000);
             watch.empty();
@@ -656,7 +661,7 @@ $(document).ready(function(){
             hours.text('00'); minutes.text('00'); seconds.text('00');
         };
         this.getScore = function(){
-            return addZero(m) + ':' + addZero(s);
+            return (h > 0) ? '59:59' : addZero(m) + ':' + addZero(s);
         }
     };
 
@@ -699,24 +704,23 @@ $(document).ready(function(){
                     tabTr[0].appendChild(tabPoint[0]);
                     ten[0].appendChild(tabTr[0]);
                 }
-                if (screen.width >= 767){
+                if (screen.width >= 800){
                     section[0].appendChild(ten[0]);
                 }else{
-                    ten.css({
-                        margin: '0 auto',
-                        display:'none',
-                    });
-                    showButton.css({
-                       display: 'block',
-                       margin: '0 auto'
-                    });
-                    var bigDiv = $('.game>div')[0];
-                    bigDiv.appendChild(showButton[0]);
-                    bigDiv.appendChild(ten[0]);
-                    showButton.on('click',function(){
-                        ten.slideToggle(100);
-                    });
+                    var bigDiv = $('<div class="forTen"></div>');
+                    var close = $('<div class="closeButton">X</div>')
 
+                    bigDiv[0].appendChild(ten[0]);
+                    bigDiv[0].appendChild(close[0]);
+                    bigDiv.addClass('hidden');
+                    showButton.on('click',function(){
+                        bigDiv.slideDown(800);
+                    });
+                    close.on('click', function(){
+                        bigDiv.slideUp(800);
+                    });
+                    $('.game h2')[0].appendChild(showButton[0]);
+                    $('.game')[0].appendChild(bigDiv[0]);
                 }
             })
     };
