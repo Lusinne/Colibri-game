@@ -62,7 +62,7 @@
 						</a>
 					</div>
                     <div class="text-center p-t-15">
-                        <a class="txt2" href="colibri-game/index.php">
+                        <a class="txt2" href="Colibri-game/index.php">
                             Մուտք գործել որպես հյուր
                         </a>
                     </div>

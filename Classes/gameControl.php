@@ -1,6 +1,6 @@
 <?php
 
-require_once 'DB.php';
+require_once 'Database.php';
 
 class gameControl extends Database
 {

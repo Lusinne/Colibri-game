@@ -5,7 +5,7 @@ if(empty($_COOKIE['tkn'])){
     require_once 'login/index.php';
 }
 else{
-    require_once 'Classes/User.php';
+    require_once './Classes/User.php';
     $obj = new User;
     date_default_timezone_set('Asia/Yerevan');
     if($userId = $obj->checkCookie($_COOKIE['tkn'],time())){
